@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\S5\\ProjectPRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj": {}
+    "D:\\FPT\\Semester_5\\PRN211\\Project_Final\\PRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj": {}
   },
   "projects": {
-    "D:\\S5\\ProjectPRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj": {
+    "D:\\FPT\\Semester_5\\PRN211\\Project_Final\\PRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\S5\\ProjectPRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj",
+        "projectUniqueName": "D:\\FPT\\Semester_5\\PRN211\\Project_Final\\PRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj",
         "projectName": "StudentManagement",
-        "projectPath": "D:\\S5\\ProjectPRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj",
-        "packagesPath": "C:\\Users\\win\\.nuget\\packages\\",
-        "outputPath": "D:\\S5\\ProjectPRN192\\StudentManagement\\StudentManagement\\obj\\",
+        "projectPath": "D:\\FPT\\Semester_5\\PRN211\\Project_Final\\PRN192\\StudentManagement\\StudentManagement\\StudentManagement.csproj",
+        "packagesPath": "C:\\Users\\Pham Minh Giang\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\Semester_5\\PRN211\\Project_Final\\PRN192\\StudentManagement\\StudentManagement\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\win\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Pham Minh Giang\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -91,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
