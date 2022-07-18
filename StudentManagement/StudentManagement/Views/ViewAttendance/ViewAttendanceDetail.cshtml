@@ -1,0 +1,64 @@
+﻿@using StudentManagement
+@using StudentManagement.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<Schedule>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+    <div>
+        <h3>Course</h3>
+        <ul>
+            <form>
+                @foreach (Subject s in @ViewBag.listSubject)
+                {
+                <li>
+                    <a asp-controller="ViewAttendance" asp-action="ViewAttendanceDetail" asp-route-subjectId="@s.SubjectId">@s.SubjectName (@s.SubjectCode)</a>
+                </li>
+                }
+            </form>
+        </ul>
+    </div>
+    <div>
+        <h3>Report</h3>
+        <h5 style="font-weight: bold">Absent: @ViewBag.Percent % (@ViewBag.Absent on @ViewBag.Total total )</h5>
+        <table border="1px">
+
+            <tr style="font-weight: bold">
+                <td>Date</td>
+                <td>Slot</td>
+                <td>Room</td>
+                <td>Lecturer</td>
+                <td>Class Name</td>
+                <td>Attendance Status</td>
+            </tr>
+
+            @foreach (Schedule s in Model)
+            {
+                <tr>
+                    <td>@s.ScheduleDate</td>
+                    <td>@s.Slot.SlotId (@s.Slot.SlotTime)</td>
+                    <td>@s.Room.RoomName</td>
+                    <td>@s.Lecturer.LecturerName</td>
+                    <td>@s.Class.ClassName</td>
+                    @if (@s.Status == true)
+                    {
+                        <td>Attend</td>
+                    }
+                    else if (@s.Status == false)
+                    {
+                        <td>Absent</td>
+                    }
+                    else
+                    {
+                        <td>Future</td>
+                    }
+                </tr>
+            }
+
+
+        </table>
+    </div>
+
+}
