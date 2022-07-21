@@ -4,16 +4,46 @@
 *@
 @{
     ViewData["Title"] = "Home Page";
-    <h1>Hello Student</h1>
-    @ViewBag.Student.StudentId
-    @ViewBag.Student.ClassId
-    @ViewBag.Student.StudentCode
-    @ViewBag.Student.StudentName
-    @ViewBag.Student.StudentBofd
-    @ViewBag.Student.StudentAddress
-    @ViewBag.Student.StudentEmail
-    @ViewBag.Student.StudentPass
-    @ViewBag.Student.StudentImg
-    @ViewBag.Student.StudentGender
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="home">Schedule</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+                <ul class="navbar-nav m-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home Student</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Student" asp-action="Profile" >Hello @ViewBag.Student.StudentName</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Login" asp-action="Logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <h1>Home Student</h1>
+    <br />
+    <ul>
+        <li>
+            <a asp-controller="Student" asp-action="TimeTable">View Time Table</a>
+        </li>
+        <li>
+            <a asp-controller="ViewAttendance" asp-action="Index">View Attendace</a>
+        </li>
+        
+    </ul>
+
 
 }

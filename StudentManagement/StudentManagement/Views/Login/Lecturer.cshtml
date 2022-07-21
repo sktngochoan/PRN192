@@ -20,10 +20,10 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
                 <ul class="navbar-nav m-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home Student</a>
+                        <a class="nav-link" href="#">Home Lecturer</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Hello @ViewBag.Student.StudentName</a>
+                        <a class="nav-link" asp-controller="Lecturer" asp-action="Profile" >Hello @ViewBag.Lecturer.LecturerName</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Login" asp-action="Logout">Logout</a>
@@ -33,16 +33,5 @@
         </div>
     </nav>
 
-    <h1>Hello Student</h1>
-    @ViewBag.Student.StudentId
-    @ViewBag.Student.ClassId
-    @ViewBag.Student.StudentCode
-    @ViewBag.Student.StudentName
-    @ViewBag.Student.StudentBofd
-    @ViewBag.Student.StudentAddress
-    @ViewBag.Student.StudentEmail
-    @ViewBag.Student.StudentPass
-    @ViewBag.Student.StudentImg
-    @ViewBag.Student.StudentGender
-
+    <h1>Home Lecturer</h1>
 }

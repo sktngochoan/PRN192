@@ -504,6 +504,19 @@ namespace StudentManagement.Controllers
             ViewBag.check = attendance;
             return RedirectToAction("TimeTable");
         }
+
+        public IActionResult Profile()
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student;
+            return View();
+        }
     }
 
 }

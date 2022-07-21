@@ -1,5 +1,4 @@
-﻿@using StudentManagement.Models;
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -23,7 +22,7 @@
                         <a class="nav-link" href="#">Home Student</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Hello @ViewBag.Student.StudentName</a>
+                        <a class="nav-link" asp-controller="Student" asp-action="Profile">Hello @ViewBag.Student.StudentName</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Login" asp-action="Logout">Logout</a>
@@ -33,16 +32,21 @@
         </div>
     </nav>
 
-    <h1>Hello Student</h1>
-    @ViewBag.Student.StudentId
-    @ViewBag.Student.ClassId
-    @ViewBag.Student.StudentCode
-    @ViewBag.Student.StudentName
-    @ViewBag.Student.StudentBofd
-    @ViewBag.Student.StudentAddress
-    @ViewBag.Student.StudentEmail
-    @ViewBag.Student.StudentPass
-    @ViewBag.Student.StudentImg
-    @ViewBag.Student.StudentGender
+    <form>
+        <h1>Student Profile</h1>
+        <div>
+            <h3>Name</h3>
+            <input type="text" value="@ViewBag.Student.StudentName">
+        </div>
+        <div>
+            <h3>Email</h3>
+            <input type="text" value="@ViewBag.Student.StudentEmail">
+        </div>
+        <div>
+            <h3>Gender</h3>
+            <input type="text" value="@ViewBag.Student.StudentEmail">
+        </div>
+
+    </form>
 
 }
