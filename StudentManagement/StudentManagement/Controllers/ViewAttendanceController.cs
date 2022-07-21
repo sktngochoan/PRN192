@@ -47,13 +47,17 @@ namespace Student_Management.Controllers
                                select su).ToList();
             ViewBag.listSubject = listSubject;
 
-            int total = (from s in db.Schedules
-                         where s.SubjectId == subjectId
-                         select s).Count();
-            int absent = (from s in db.Schedules
-                          where s.SubjectId == subjectId && s.Status == false
+            //int total = (from s in db.StudentAttendeds
+            //             join sc in db.Schedules on s.ScheduleId equals sc.ScheduleId
+            //             where sc.SubjectId == subjectId && s.StudentId == studentId
+            //             select s).Count();
+            int total = 30;
+
+            int absent = (from s in db.StudentAttendeds
+                          join sc in db.Schedules on s.ScheduleId equals sc.ScheduleId
+                          where sc.SubjectId == subjectId && s.StudentStatus == 1 && s.StudentId == studentId
                           select s).Count();
-            int percent = (int)(absent / total * 100);
+            int percent = (int)(absent / 0.3);
 
             ViewBag.Percent = percent;
             ViewBag.Total = total;

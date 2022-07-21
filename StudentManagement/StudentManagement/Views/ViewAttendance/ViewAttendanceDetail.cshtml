@@ -70,11 +70,11 @@
                     <td>@s.Schedule.Room.RoomName</td>
                     <td>@s.Schedule.Lecturer.LecturerName</td>
                     <td>@s.Schedule.Class.ClassName</td>
-                    @if (@s.StudentStatus == 1)
+                    @if (@s.StudentStatus == 2)
                     {
                         <td style="color: green">Attend</td>
                     }
-                    else if (@s.StudentStatus == 2)
+                    else if (@s.StudentStatus == 1)
                     {
                         <td style="color: red">Absent</td>
                     }
