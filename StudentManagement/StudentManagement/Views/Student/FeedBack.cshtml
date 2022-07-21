@@ -1,0 +1,66 @@
+﻿@using StudentManagement.Models
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@model StudentManagement.Models.Subject
+@using System.Linq;
+@{
+    List<Subject> listSubject = ViewBag.ListSubject;
+}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <h2>
+                        List of feedbacks for @ViewBag.Student.StudentName (@ViewBag.Student.StudentCode)
+                    </h2>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>
+                                    GROUPNAME
+                                </th>
+                                <th>
+                                    LECTURER
+                                </th>
+                                <th>
+                                    SUBJECTS
+                                </th>
+                                <th>
+                                    DO FEEDBACK
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Subject item in listSubject)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Class.ClassName
+                                    </td>
+                                    <td>
+                                        @item.Lecturer.LecturerName
+                                    </td>
+                                    <td>
+                                        @item.SubjectCode
+
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Student" asp-action="EditComment" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">Edit Comment</a>|
+                                        <a asp-controller="Student" asp-action="EditFeedback" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">RETAKE</a>|
+                                        <a asp-controller="Student" asp-action="AddFeedback" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">Add</a>|
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div>
+                    </div>
+
+                </div>
+            </div>
+</body>

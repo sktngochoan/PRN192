@@ -54,7 +54,7 @@
             <thead>
                 <tr class="bg-light-gray">
                     <th class="text-uppercase" rowspan="2">
-                        <form id="form" action="Student" method="post">
+                        <form asp-controller="Student" asp-action="TimeTable" id="form">
                             YEAR  <select>
                                 @for (int i = 2022; i >= 2019; i--)
                                 {
@@ -104,21 +104,24 @@
                                             <a asp-controller="Student" asp-action="ActivityDetail" asp-route-scheduleId=@map[slot.SlotId][date].ScheduleId>
                                                 <b>@map[slot.SlotId][date].Subject.SubjectCode</b>
                                             </a>
-                                            @if(@map[slot.SlotId][date].Status == false)
+                                            @if (@ViewBag.role.ToString().Equals("2") && @ViewBag.IsAttend == 1)
                                             {
-                                               <a asp-controller="Student" asp-action="Attendance" asp-route-classId=@map[slot.SlotId][date].ClassId asp-route-scheduleId=@map[slot.SlotId][date].ScheduleId>
-                                                <b>Attendance</b>
-                                                </a>
-                                            }
-                                            else
-                                            {
-                                                if(DateTime.Compare(DateTime.Now, Convert.ToDateTime(context.StudentAttendeds.FirstOrDefault
-                                                (x => x.ScheduleId == @map[slot.SlotId][date].ScheduleId).StudentAttendedDate).AddDays(2)) < 0)
+                                                @if (@map[slot.SlotId][date].Status == false)
                                                 {
-                                                <br />
-                                                <a style="color:green" asp-controller="Student" asp-action="EditAttendance" asp-route-classId=@map[slot.SlotId][date].ClassId asp-route-scheduleId=@map[slot.SlotId][date].ScheduleId>
-                                                <b>Edit</b>
-                                                </a>
+                                                    <a asp-controller="Student" asp-action="Attendance" asp-route-classId=@map[slot.SlotId][date].ClassId asp-route-scheduleId=@map[slot.SlotId][date].ScheduleId>
+                                                        <b>Attendance</b>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    if (DateTime.Compare(DateTime.Now, Convert.ToDateTime(context.StudentAttendeds.FirstOrDefault
+                                                    (x => x.ScheduleId == @map[slot.SlotId][date].ScheduleId).StudentAttendedDate).AddDays(2)) < 0)
+                                                    {
+                                                        <br />
+                                                        <a style="color:green" asp-controller="Student" asp-action="EditAttendance" asp-route-classId=@map[slot.SlotId][date].ClassId asp-route-scheduleId=@map[slot.SlotId][date].ScheduleId>
+                                                            <b>Edit</b>
+                                                        </a>
+                                                    }
                                                 }
                                             }
                                             <div>
@@ -187,7 +190,7 @@
                         </tr>
                     }
                 }
-                
+
             </tbody>
         </table>
         <div>

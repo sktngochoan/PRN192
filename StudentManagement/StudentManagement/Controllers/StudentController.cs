@@ -54,6 +54,7 @@ namespace StudentManagement.Controllers
             {
                 string jsonaccount = JsonConvert.SerializeObject(student);
                 session.SetString("account", jsonaccount);
+                session.SetString("role", "1");
                 return RedirectToAction("Student");
             }
 
@@ -61,6 +62,7 @@ namespace StudentManagement.Controllers
             {
                 string jsonaccount = JsonConvert.SerializeObject(lecturer);
                 session.SetString("account", jsonaccount);
+                session.SetString("role", "2");
                 return RedirectToAction("Lecturer");
             }
             else
@@ -81,6 +83,8 @@ namespace StudentManagement.Controllers
                 student = JsonConvert.DeserializeObject<Student>(jsonaccount);
             }
             ViewBag.Student = student;
+            //var test = Convert.ToDateTime(student.StudentBofd).ToString("yyyyy-MM-dd");
+            //ViewBag.Test = test;
             return View();
         }
 
@@ -94,7 +98,7 @@ namespace StudentManagement.Controllers
                 lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
             }
             ViewBag.Lecturer = lecturer;
-            return View();
+            return RedirectToAction("TimeTable");
         }
 
         public IActionResult Logout()
@@ -256,6 +260,8 @@ namespace StudentManagement.Controllers
 
         public IActionResult TimeTable()
         {
+            var session = HttpContext.Session;
+            ViewBag.role = session.GetString("role");
             // getDate
             List<Week> listWeek1 = context.Weeks.ToList();
             int weekid = 0;
@@ -387,6 +393,8 @@ namespace StudentManagement.Controllers
         [HttpPost]
         public IActionResult TimeTable(int weekid)
         {
+            var session = HttpContext.Session;
+            ViewBag.role = session.GetString("role");
             List<Week> listWeek1 = context.Weeks.ToList();
             int weekid_check = 0;
             foreach (var item in listWeek1)
@@ -400,6 +408,10 @@ namespace StudentManagement.Controllers
             if (weekid == weekid_check)
             {
                 ViewBag.IsAttend = 1;
+            }
+            else
+            {
+                ViewBag.IsAttend = 2;
             }
             List<Schedule> ls = context.Schedules.
                 Where(p => p.WeekId == weekid).ToList();
@@ -655,6 +667,110 @@ namespace StudentManagement.Controllers
             }
             ViewBag.check = attendance;
             return RedirectToAction("TimeTable");
+        }
+        public IActionResult FeedBack()
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            int classId = (int)student.ClassId;
+            ViewBag.ListSubject = context.Subjects.Where(x => x.ClassId == classId).ToList();
+            ViewBag.ListClass = context.Classes.ToList();
+            ViewBag.Lecture = context.Lecturers.ToList();
+            ViewBag.Student = student;
+            return View();
+        }
+        public IActionResult EditFeedback(int subjectId,int lecturerId)
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
+            ViewBag.Lecturer = context.Lecturers.ToList();
+            ViewBag.Class = context.Classes.ToList();
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            ViewBag.feedback = feedback;
+            return View();
+        }
+        public IActionResult AddFeedback(int subjectId, int lecturerId)
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
+            ViewBag.Lecturer = context.Lecturers.ToList();
+            ViewBag.Class = context.Classes.ToList();
+            return View();
+        }
+        public IActionResult SaveFeedback(int subjectId,int lecturerId,int tb,int tsk,int tac,int tsg,int trt,String comment)
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            Feedback feedback = new Feedback();
+            feedback.StudentId = student.StudentId;
+            feedback.SubjectId = subjectId;
+            feedback.LectureId = lecturerId;
+            feedback.TeacherPunctuality = tb;
+            feedback.TeacherSkill = tsk;
+            feedback.TeacherCoverTopics = tac;
+            feedback.TeacherSupport = tsg;
+            feedback.TeacherRespond = trt;
+            feedback.Comment = comment;
+            context.Feedbacks.Add(feedback);
+            context.SaveChanges();
+            return RedirectToAction("FeedBack");
+        }
+
+        public IActionResult EditInfoFeedBack(int subjectId, int lecturerId, int tb, int tsk, int tac, int tsg, int trt, String comment)
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            feedback.TeacherPunctuality = tb;
+            feedback.TeacherSkill = tsk;
+            feedback.TeacherCoverTopics = tac;
+            feedback.TeacherSupport = tsg;
+            feedback.TeacherRespond = trt;
+            feedback.Comment = comment;
+            context.SaveChanges();
+            return RedirectToAction("FeedBack");
+
+        }
+        public IActionResult EditComment(int subjectId, int lecturerId)
+        {
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            ViewBag.feedback = feedback;
+            return View();
+        }
+
+        public IActionResult EditInfoComment(int subjectId, int lecturerId,String comment)
+        {
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            feedback.Comment = comment;
+            context.SaveChanges();
+            return RedirectToAction("FeedBack");
         }
     }
 
