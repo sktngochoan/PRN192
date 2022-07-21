@@ -102,6 +102,158 @@ namespace StudentManagement.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
+
+        public IActionResult StudentProfile()
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student;
+            return View();
+        }
+
+        public IActionResult StudentUpdateProfile()
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student;
+            var dateofbirth = Convert.ToDateTime(student.StudentBofd).ToString("yyyy-MM-dd");
+            ViewBag.Dateofbirth = dateofbirth;
+            return View();
+        }
+
+        [HttpPost]
+        public object StudentUpdateProfile(string image, string id, string name, string dob,
+            string gender, string email, string address)
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            if (name == null || name.Equals(""))
+            {
+                ViewBag.nameMess = "Name can not empty!";
+            }
+            if (email == null || email.Equals(""))
+            {
+                ViewBag.emailMess = "Email can not empty!";
+            }
+            if (address == null || address.Equals(""))
+            {
+                ViewBag.addressMess = "Address can not empty!";
+            }
+            if (name != null && email != null && address != null)
+            {
+                int idS = Int32.Parse(id);
+                Student s = context.Students.Find(idS);
+                if(image == null || image.Equals(""))
+                {
+                    image = context.Students.Find(idS).StudentImg;
+                }
+                s.StudentImg = image;
+                s.StudentName = name;
+                s.StudentBofd = Convert.ToDateTime(dob);
+                s.StudentEmail = email;
+                s.StudentAddress = address;
+                s.StudentGender = bool.Parse(gender);
+                context.Students.Update(s);
+                context.SaveChanges();
+                string setSession = JsonConvert.SerializeObject(context.Students.Find(idS));
+                session.SetString("account", setSession);
+                jsonaccount = session.GetString("account");
+                student = new Student();
+                if (jsonaccount != null)
+                {
+                    student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+                }
+            }
+            var dateofbirth = Convert.ToDateTime(student.StudentBofd).ToString("yyyy-MM-dd");
+            ViewBag.Dateofbirth = dateofbirth;
+            ViewBag.Student = student;
+            return View();
+
+        }public IActionResult LecturerProfile()
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            return View();
+        }
+
+        public IActionResult LecturerUpdateProfile()
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            return View();
+        }
+
+        [HttpPost]
+        public object LecturerUpdateProfile(string image, string id, string name, string email)
+        {
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            if (name == null || name.Equals(""))
+            {
+                ViewBag.nameMess = "Name can not empty!";
+            }
+            if (email == null || email.Equals(""))
+            {
+                ViewBag.emailMess = "Email can not empty!";
+            }
+            if (name != null && email != null)
+            {
+                int idS = Int32.Parse(id);
+                Lecturer l = context.Lecturers.Find(idS);
+                if (image == null || image.Equals(""))
+                {
+                    image = context.Lecturers.Find(idS).LecturerImg;
+                }
+                l.LecturerName = name;
+                l.LecturerEmail = email;
+                l.LecturerImg = image;
+                context.Lecturers.Update(l);
+                context.SaveChanges();
+                string setSession = JsonConvert.SerializeObject(context.Lecturers.Find(idS));
+                session.SetString("account", setSession);
+                jsonaccount = session.GetString("account");
+                if (jsonaccount != null)
+                {
+                    lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+                }
+            }
+            ViewBag.Lecturer = lecturer;
+            return View();
+        }
+
+
         public IActionResult TimeTable()
         {
             // getDate
@@ -109,7 +261,7 @@ namespace StudentManagement.Controllers
             int weekid = 0;
             foreach (var item in listWeek1)
             {
-                if (DateTime.Compare(DateTime.Now, (DateTime)item.EndDate)<0)
+                if (DateTime.Compare(DateTime.Now, (DateTime)item.EndDate) < 0)
                 {
                     weekid = item.WeekId;
                     break;
@@ -163,7 +315,7 @@ namespace StudentManagement.Controllers
             List<string> listWeek = new List<string>();
             List<string> Weeks = new List<string>();
             int count = 1;
-            for (int i = 0; i<listDay.Count; i++)
+            for (int i = 0; i < listDay.Count; i++)
             {
                 if (count == 1 || count % 7 == 0)
                 {
@@ -183,10 +335,10 @@ namespace StudentManagement.Controllers
                     count++;
                 }
             }
-            for (int i = 0; i<listWeek.Count; i++)
+            for (int i = 0; i < listWeek.Count; i++)
             {
                 if (i == 0 || i % 2 == 0)
-                    Weeks.Add(listWeek[i] + "-" + listWeek[i+1]);
+                    Weeks.Add(listWeek[i] + "-" + listWeek[i + 1]);
             }
             List<StudentAttended> listAttend = (from StudentAttended in context.StudentAttendeds
                                                 where StudentAttended.StudentId == 1
@@ -195,9 +347,9 @@ namespace StudentManagement.Controllers
             ViewBag.studentAttend = listAttend;
             List<int> attendance = new List<int>();
             Dictionary<int, int> attended = new Dictionary<int, int>();
-            for (int i = 0; i<ls.Count; i++)
+            for (int i = 0; i < ls.Count; i++)
             {
-                for (int j = 0; j<listAttend.Count; j++)
+                for (int j = 0; j < listAttend.Count; j++)
                 {
                     if (ls[i].ScheduleId == listAttend[j].ScheduleId)
                     {
@@ -214,7 +366,7 @@ namespace StudentManagement.Controllers
                     }
                 }
             }
-            for (int i = 0; i<ls.Count; i++)
+            for (int i = 0; i < ls.Count; i++)
             {
                 if (!attended.ContainsKey(ls[i].ScheduleId))
                 {
@@ -239,7 +391,7 @@ namespace StudentManagement.Controllers
             int weekid_check = 0;
             foreach (var item in listWeek1)
             {
-                if (DateTime.Compare(DateTime.Now, (DateTime)item.EndDate)<0)
+                if (DateTime.Compare(DateTime.Now, (DateTime)item.EndDate) < 0)
                 {
                     weekid_check = item.WeekId;
                     break;
@@ -296,7 +448,7 @@ namespace StudentManagement.Controllers
             List<string> listWeek = new List<string>();
             List<string> Weeks = new List<string>();
             int count = 1;
-            for (int i = 0; i<listDay.Count; i++)
+            for (int i = 0; i < listDay.Count; i++)
             {
                 if (count == 1 || count % 7 == 0)
                 {
@@ -316,10 +468,10 @@ namespace StudentManagement.Controllers
                     count++;
                 }
             }
-            for (int i = 0; i<listWeek.Count; i++)
+            for (int i = 0; i < listWeek.Count; i++)
             {
                 if (i == 0 || i % 2 == 0)
-                    Weeks.Add(listWeek[i] + "-" + listWeek[i+1]);
+                    Weeks.Add(listWeek[i] + "-" + listWeek[i + 1]);
             }
             List<StudentAttended> listAttend = (from StudentAttended in context.StudentAttendeds
                                                 where StudentAttended.StudentId == 1
@@ -328,9 +480,9 @@ namespace StudentManagement.Controllers
             ViewBag.studentAttend = listAttend;
             List<int> attendance = new List<int>();
             Dictionary<int, int> attended = new Dictionary<int, int>();
-            for (int i = 0; i<ls.Count; i++)
+            for (int i = 0; i < ls.Count; i++)
             {
-                for (int j = 0; j<listAttend.Count; j++)
+                for (int j = 0; j < listAttend.Count; j++)
                 {
                     if (ls[i].ScheduleId == listAttend[j].ScheduleId)
                     {
@@ -347,7 +499,7 @@ namespace StudentManagement.Controllers
                     }
                 }
             }
-            for (int i = 0; i<ls.Count; i++)
+            for (int i = 0; i < ls.Count; i++)
             {
                 if (!attended.ContainsKey(ls[i].ScheduleId))
                 {
@@ -416,7 +568,7 @@ namespace StudentManagement.Controllers
             context.SaveChanges();
             if (listStudent.Count() == attendance.Count())
             {
-                for (int i = 0; i<listStudent.Count(); i++)
+                for (int i = 0; i < listStudent.Count(); i++)
                 {
                     StudentAttended studentAttended1 = new StudentAttended();
                     studentAttended1.StudentId = listStudent[i].StudentId;
@@ -431,9 +583,9 @@ namespace StudentManagement.Controllers
             }
             else
             {
-                for (int i = 0; i<listStudent.Count(); i++)
+                for (int i = 0; i < listStudent.Count(); i++)
                 {
-                    for (int j = 0; j<attendance.Count(); j++)
+                    for (int j = 0; j < attendance.Count(); j++)
                     {
                         if (listStudent[i].StudentId == attendance[j])
                         {
@@ -467,7 +619,7 @@ namespace StudentManagement.Controllers
                                          select Student).ToList();
             if (listStudent.Count() == attendance.Count())
             {
-                for (int i = 0; i<listStudent.Count(); i++)
+                for (int i = 0; i < listStudent.Count(); i++)
                 {
                     StudentAttended studentAttended1 = context.StudentAttendeds.
                         FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
@@ -479,9 +631,9 @@ namespace StudentManagement.Controllers
             }
             else
             {
-                for (int i = 0; i<listStudent.Count(); i++)
+                for (int i = 0; i < listStudent.Count(); i++)
                 {
-                    for (int j = 0; j<attendance.Count(); j++)
+                    for (int j = 0; j < attendance.Count(); j++)
                     {
                         if (listStudent[i].StudentId == attendance[j])
                         {

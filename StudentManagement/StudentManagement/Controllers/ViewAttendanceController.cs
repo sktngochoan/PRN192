@@ -25,6 +25,8 @@ namespace Student_Management.Controllers
                                where st.StudentId == studentId
                                select su).ToList();
             ViewBag.listSubject = listSubject;
+            ViewBag.Student = student;
+
             return View();
         }
 
@@ -61,10 +63,13 @@ namespace Student_Management.Controllers
             List<Room> rooms = db.Rooms.ToList();
             List<Lecturer> lecturers = db.Lecturers.ToList();
             List<Class> classes = db.Classes.ToList();
-            List<Schedule> schedule = (from s in db.Schedules
-                                       where s.SubjectId == subjectId
-                                       select s).ToList();
-            return View(schedule);
+            List<Schedule> schedule = db.Schedules.ToList();
+            List<StudentAttended> studentAttendeds = (from st in db.StudentAttendeds
+                                                      join sc in db.Schedules on st.Schedule.ScheduleId equals sc.ScheduleId
+                                                      where sc.SubjectId == subjectId && st.StudentId == studentId
+                                                      select st).ToList();
+            ViewBag.Student = student;
+            return View(studentAttendeds);
         }
     }
 }

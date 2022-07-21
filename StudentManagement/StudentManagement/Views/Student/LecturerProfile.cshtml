@@ -1,10 +1,8 @@
-﻿@using StudentManagement
-@using StudentManagement.Models
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@*
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!------ Include the above in your HEAD tag ---------->
@@ -20,30 +18,41 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
                 <ul class="navbar-nav m-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Student" asp-action="Student">Student Home</a>
+                        <a class="nav-link" asp-controller="Student" asp-action="Lecturer">Lecturer Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Student" asp-action="StudentProfile">Hello @ViewBag.Student.StudentName</a>
+                        <a class="nav-link" asp-controller="Student" asp-action="LecturerProfile">Hello @ViewBag.Lecturer.LecturerName</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Student" asp-action="Logout">Logout</a>
                     </li>
                 </ul>
             </div>
+
         </div>
     </nav>
-    <div>
-        <h3>Course</h3>
-        <ul>
-            <form>
-                @foreach (Subject s in @ViewBag.listSubject)
-                {
-                <li>
-                    <a asp-controller="ViewAttendance" asp-action="ViewAttendanceDetail" asp-route-subjectId="@s.SubjectId">@s.SubjectName (@s.SubjectCode)</a>
-                </li>
-                }
-            </form>
-        </ul>
-    </div>
 
+    ViewData["Title"] = "Home Page";
+
+    <h1>Lecturer Information</h1>
+
+    <img style="height: 100px; width: 100px" src="~/images/@ViewBag.Lecturer.LecturerImg" />
+
+    <h3 style="font-weight: bold">Profile</h3>
+
+    <table border="1px">
+        <tr hidden>
+            <td>Lecturer ID</td>
+            <td>@ViewBag.Lecturer.LecturerId</td>
+        </tr>
+        <tr>
+            <td>Lecturer Name</td>
+            <td>@ViewBag.Lecturer.LecturerName</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>@ViewBag.Lecturer.LecturerEmail</td>
+        </tr>
+    </table>
+    <a asp-controller="Student" asp-action="LecturerUpdateProfile">Update Profile</a>
 }
