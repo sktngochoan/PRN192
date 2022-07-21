@@ -152,3 +152,7 @@ D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\V
 D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\ViewAttendance\ViewAttendanceDetail.cshtml.g.cs
 D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\Login.cshtml.g.cs
 D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\Student.cshtml.g.cs
+D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\FeedBack.cshtml.g.cs
+D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\AddFeedback.cshtml.g.cs
+D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\EditFeedback.cshtml.g.cs
+D:\S5\ProjectPRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\EditComment.cshtml.g.cs

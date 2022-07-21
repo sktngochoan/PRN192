@@ -18,6 +18,7 @@ namespace StudentManagement.Models
         }
 
         public virtual DbSet<Class> Classes { get; set; }
+        public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<Grade> Grades { get; set; }
         public virtual DbSet<GradeCategory> GradeCategories { get; set; }
         public virtual DbSet<Lecturer> Lecturers { get; set; }
@@ -60,6 +61,48 @@ namespace StudentManagement.Models
                     .WithMany(p => p.Classes)
                     .HasForeignKey(d => d.SemesterId)
                     .HasConstraintName("FK__class__semester___398D8EEE");
+            });
+
+            modelBuilder.Entity<Feedback>(entity =>
+            {
+                entity.ToTable("feedback");
+
+                entity.Property(e => e.FeedbackId).HasColumnName("feedback_id");
+
+                entity.Property(e => e.Comment)
+                    .HasMaxLength(1000)
+                    .HasColumnName("comment");
+
+                entity.Property(e => e.LectureId).HasColumnName("lecture_id");
+
+                entity.Property(e => e.StudentId).HasColumnName("student_id");
+
+                entity.Property(e => e.SubjectId).HasColumnName("subject_id");
+
+                entity.Property(e => e.TeacherCoverTopics).HasColumnName("teacher_Cover_Topics");
+
+                entity.Property(e => e.TeacherPunctuality).HasColumnName("teacher_punctuality");
+
+                entity.Property(e => e.TeacherRespond).HasColumnName("teacher_respond");
+
+                entity.Property(e => e.TeacherSkill).HasColumnName("teacher_skill");
+
+                entity.Property(e => e.TeacherSupport).HasColumnName("teacher_support");
+
+                entity.HasOne(d => d.Lecture)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.LectureId)
+                    .HasConstraintName("FK__feedback__lectur__04E4BC85");
+
+                entity.HasOne(d => d.Student)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.StudentId)
+                    .HasConstraintName("FK__feedback__studen__02FC7413");
+
+                entity.HasOne(d => d.Subject)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.SubjectId)
+                    .HasConstraintName("FK__feedback__subjec__03F0984C");
             });
 
             modelBuilder.Entity<Grade>(entity =>

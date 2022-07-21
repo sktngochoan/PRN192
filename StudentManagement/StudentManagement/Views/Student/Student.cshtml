@@ -1,19 +1,22 @@
-﻿@using StudentManagement.Models;
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using StudentManagement.Models
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@model StudentManagement.Models.Schedule
+@using System.Linq;
+@using System.Globalization
 @{
-    ViewData["Title"] = "Home Page";
-    <h1>Hello Student</h1>
-    @ViewBag.Student.StudentId
-    @ViewBag.Student.ClassId
-    @ViewBag.Student.StudentCode
-    @ViewBag.Student.StudentName
-    @ViewBag.Student.StudentBofd
-    @ViewBag.Student.StudentAddress
-    @ViewBag.Student.StudentEmail
-    @ViewBag.Student.StudentPass
-    @ViewBag.Student.StudentImg
-    @ViewBag.Student.StudentGender
-
+    Dictionary<int, Dictionary<string, Schedule>> map = ViewBag.TimeTable;
+    List<StudentAttended> list = ViewBag.StudentAttendance;
+    int check = 0;
+    student_managementContext context = new student_managementContext();
 }
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+<div>
+    Action:
+    <button type="button" onclick="location.href='/Student/TimeTable'" class="btn btn-secondary">TimeTable</button>
+    <button type="button" onclick="location.href='/Student/FeedBack'" class="btn btn-info">FeedBack</button>
+</div>

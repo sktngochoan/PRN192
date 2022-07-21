@@ -53,7 +53,7 @@ namespace StudentManagement
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Student}/{action=TimeTable}/{id?}");
+                    pattern: "{controller=Student}/{action=Login}/{id?}");
             });
         }
     }
