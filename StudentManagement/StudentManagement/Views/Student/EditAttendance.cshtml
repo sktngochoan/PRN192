@@ -4,6 +4,7 @@
 @using System.Linq;
 @{
     int count = 1;
+    List<StudentAttended> listSA = ViewBag.listSA;
 }
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -72,7 +73,7 @@
                             @item.StudentCode
                     </td>
                     <td>
-                        <input value="@item.StudentId" type="checkbox" name="attendance"> 
+                        <input @(listSA[count-1].StudentStatus == 2?"checked":"") value="@item.StudentId" type="checkbox" name="attendance"> 
                         <input type="hidden" name="scheduleId" value="@ViewBag.scheduleId">
                         <input type="hidden" name="classId" value="@ViewBag.classId">
                     </td>
