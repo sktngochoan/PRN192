@@ -336,3 +336,6 @@ D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagemen
 D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\EditComment.cshtml.g.cs
 D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\EditFeedback.cshtml.g.cs
 D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\FeedBack.cshtml.g.cs
+D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\ViewFeedBack.cshtml.g.cs
+D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\ViewFeedbackDetail.cshtml.g.cs
+D:\FPT\Semester_5\PRN211\Project_Final\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\ViewFeedbackStudentDetail.cshtml.g.cs
