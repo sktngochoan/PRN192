@@ -11,6 +11,7 @@ namespace StudentManagement.Models
         {
             Feedbacks = new HashSet<Feedback>();
             StudentAttendeds = new HashSet<StudentAttended>();
+            StudentGrades = new HashSet<StudentGrade>();
         }
 
         public int StudentId { get; set; }
@@ -27,5 +28,6 @@ namespace StudentManagement.Models
         public virtual Class Class { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<StudentAttended> StudentAttendeds { get; set; }
+        public virtual ICollection<StudentGrade> StudentGrades { get; set; }
     }
 }
