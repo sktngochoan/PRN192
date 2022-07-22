@@ -1,0 +1,63 @@
+﻿@model IEnumerable<StudentManagement.Models.StudentGrade>
+
+<form asp-controller="Marks" asp-action="Index">
+    <select onchange="this.form.submit()" name="subjectId">
+        <option>--Select Subject--</option>
+        @foreach (Subject subject in ViewBag.subjectList)
+        {
+            <option selected="@(ViewBag.subjectId == subject.SubjectId ? "selected" : null)" value="@subject.SubjectId">(@subject.SubjectCode) - @subject.Class.ClassName</option>
+        }
+
+    </select>
+
+</form>
+<br />
+
+
+<br />
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Student.StudentId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Student.StudentCode)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Student.StudentName)
+                    </th>
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Student.StudentId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Student.StudentCode)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Student.StudentName)
+                        </td>
+
+                        <td>
+                            <a asp-action="ViewMark" asp-route-SubjectId="@item.Subject.SubjectId" asp-route-StudentId="@item.StudentId">View Mark</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+

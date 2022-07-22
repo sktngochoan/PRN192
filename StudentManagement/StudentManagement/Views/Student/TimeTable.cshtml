@@ -6,13 +6,15 @@
     Dictionary<int, Dictionary<string, Schedule>> map = ViewBag.TimeTable;
     List<StudentAttended> list = ViewBag.StudentAttendance;
     int check = 0;
-    student_managementContext context = new student_managementContext();
 }
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container">
@@ -37,14 +39,7 @@
     </div>
 </nav>
 <h1>Activities for ...(HE151308)</h1>
-<div>
-    Rooms starting with AL belong to the Alpha building. VD: AL...<br />
-    Rooms starting with BE belong to the Beta building. Ex: BE,..<br />
-    Rooms starting with G belong to the Gamma building. Example: G201,...<br />
-    R-head training rooms in the Vovinam training ground area.<br />
-    Rooms starting with DE belong to the Delta building. Ex: DE,..<br />
-    Little UK (LUK) is on the 5th floor of Delta building
-</div>
+<h3>Select a term, course ...</h3>
 <div class="container-fluid">
     <div class="timetable-img text-center">
         <img src="img/content/timetable.png" alt="">
@@ -62,9 +57,10 @@
                                 }
                             </select><BR><br>
                             WEEK  <select onchange="submit()" name="weekid">
-                                @foreach (var item in ViewBag.week)
+
+                                @for (int i = 0; i < ViewBag.week.Count; i++)
                                 {
-                                    <option selected="@(item.WeekId == ViewBag.selectedWeek?"selected":null)" value="@item.WeekId">@item.WeekDate</option>
+                                    <option selected="@((i+1) == ViewBag.selectedWeek?"selected":null)" value="@(i+1)">@ViewBag.week[i]</option>
                                 }
                             </select>
                         </form>
@@ -85,21 +81,19 @@
                 </tr>
             </thead>
             <tbody>
-                @if (@ViewBag.Count != 0)
+                @foreach (Slot slot in ViewBag.slot)
                 {
-                    @foreach (Slot slot in ViewBag.slot)
-                    {
-                        <tr>
-                            <td class="align-middle">
-                                Slot @slot.SlotId
-                            </td>
-                            @if (map.ContainsKey(@slot.SlotId))
+                    <tr>
+                        <td class="align-middle">
+                            Slot @slot.SlotId
+                        </td>
+                        @if (map.ContainsKey(@slot.SlotId))
+                        {
+                            @foreach (String date in ViewBag.Date)
                             {
-                                @foreach (String date in ViewBag.Date)
+                                @if (map.Values.ElementAt(@slot.SlotId-1).ContainsKey(date))
                                 {
-                                    @if (map.Values.ElementAt(@slot.SlotId-1).ContainsKey(date))
-                                    {
-                                        <td>
+                                    <td>
 
                                             <a asp-controller="Student" asp-action="ActivityDetail" asp-route-scheduleId=@map[slot.SlotId][date].ScheduleId>
                                                 <b>@map[slot.SlotId][date].Subject.SubjectCode</b>
@@ -141,36 +135,42 @@
                                                 else
                                                 {
                                                     <span style="color:red">Not Yet</span>
-                                                    check++;
+                                                    
+                                                     break;
                                                 }
-                                            </div>(@slot.SlotTime)<br>
+                                            }*@
+                                            @if(ViewBag.attend[@map[slot.SlotId][date].ScheduleId] == 2)
+                                            {
+                                                <span style="color:green">Attend</span>
+                                                check++;
+                                            }
+                                            else if (ViewBag.attend[@map[slot.SlotId][date].ScheduleId] == 1)
+                                            {
+                                                <span style="color:red">Absent</span>
+                                                check++;
+                                            }
+                                            else
+                                            {
+                                                <span style="color:red">Not Yet</span>
+                                                check++;
+                                            }
+                                        </div>(@slot.SlotTime)<br>
 
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <div><b>-</b></div>
-                                        </td>
-                                    }
-                                    if (check < ViewBag.studentAttend.Count)
-                                    {
-
-                                    }
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <div><b>-</b></div>
+                                    </td>
+                                }
+                                if(check < ViewBag.studentAttend.Count)
+                                {
+                                     
                                 }
                             }
-                            else
-                            {
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
-                            }
-                        </tr>
-                    }
+                        }
+                    </tr>
                 }
                 else
                 {
@@ -193,12 +193,5 @@
 
             </tbody>
         </table>
-        <div>
-            -More notes / Extra notes:<br />
-
-            *(attended): HoanNNHE151308 had attended this activity / Nguyen Ngoc Hoan attended this activity<br />
-            *(absent): HoanNNHE151308 had NOT attended this activity / Nguyen Ngoc Hoan was absent from this session<br />
-            *(-): no data was given / no data yet
-        </div>
     </div>
 </div>

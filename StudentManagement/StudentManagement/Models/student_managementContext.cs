@@ -22,6 +22,7 @@ namespace StudentManagement.Models
         public virtual DbSet<Grade> Grades { get; set; }
         public virtual DbSet<GradeCategory> GradeCategories { get; set; }
         public virtual DbSet<Lecturer> Lecturers { get; set; }
+        public virtual DbSet<News> News { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<Schedule> Schedules { get; set; }
         public virtual DbSet<Semester> Semesters { get; set; }
@@ -30,7 +31,6 @@ namespace StudentManagement.Models
         public virtual DbSet<StudentAttended> StudentAttendeds { get; set; }
         public virtual DbSet<StudentGrade> StudentGrades { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
-        public virtual DbSet<Week> Weeks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -159,6 +159,20 @@ namespace StudentManagement.Models
                     .HasColumnName("lecturer_pass");
             });
 
+            modelBuilder.Entity<News>(entity =>
+            {
+                entity.Property(e => e.Date).HasColumnType("date");
+
+                entity.Property(e => e.Description).HasMaxLength(255);
+
+                entity.Property(e => e.Title).HasMaxLength(255);
+
+                entity.HasOne(d => d.Lecturers)
+                    .WithMany(p => p.News)
+                    .HasForeignKey(d => d.LecturersId)
+                    .HasConstraintName("FK__News__LecturersI__628FA481");
+            });
+
             modelBuilder.Entity<Room>(entity =>
             {
                 entity.ToTable("room");
@@ -195,8 +209,6 @@ namespace StudentManagement.Models
                 entity.Property(e => e.Status).HasColumnName("status");
 
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
-
-                entity.Property(e => e.WeekId).HasColumnName("week_id");
 
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.Schedules)

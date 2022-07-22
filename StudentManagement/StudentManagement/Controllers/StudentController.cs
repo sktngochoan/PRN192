@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using StudentManagement.Models;
 using System;
 using System.Collections;
@@ -274,7 +272,7 @@ namespace StudentManagement.Controllers
                 }
             }
             List<Schedule> ls = context.Schedules.
-                Where(p => p.WeekId == weekid).ToList();
+                Where(p => p.Day == "1").ToList();
             Dictionary<int, List<Schedule>> map = new Dictionary<int, List<Schedule>>();
             for (int i = 1; i <= 8; i++)
             {
@@ -288,7 +286,6 @@ namespace StudentManagement.Controllers
                 }
                 map.Add(i, schedules);
             }
-
             Dictionary<int, Dictionary<string, Schedule>> map2 = new Dictionary<int, Dictionary<string, Schedule>>();
             foreach (var m in map)
             {
@@ -303,7 +300,7 @@ namespace StudentManagement.Controllers
             }
 
             var date_raw = (from Schedule in context.Schedules
-                            where Schedule.WeekId == weekid
+                            where Schedule.Day == "1"
                             select Schedule.ScheduleDate)
                             .Distinct().ToList();
             List<String> listDate = new List<String>();
@@ -379,19 +376,17 @@ namespace StudentManagement.Controllers
                     attended.Add(ls[i].ScheduleId, 0);
                 }
             }
-            ViewBag.Count = ls.Count();
             ViewBag.Subject = context.Subjects.ToList();
             ViewBag.Room = context.Rooms.ToList();
             ViewBag.slot = listSlot;
-            ViewBag.week = context.Weeks.ToList();
+            ViewBag.week = Weeks;
             ViewBag.attend = attended;
             ViewBag.Date = listDate;
-            ViewBag.selectedWeek = weekid;
-            ViewBag.IsAttend = 1;
+            ViewBag.selectedWeek = Convert.ToInt32("1");
             return View();
         }
         [HttpPost]
-        public IActionResult TimeTable(int weekid)
+        public IActionResult TimeTable(String weekid)
         {
             var session = HttpContext.Session;
             ViewBag.role = session.GetString("role");
@@ -415,6 +410,8 @@ namespace StudentManagement.Controllers
             }
             List<Schedule> ls = context.Schedules.
                 Where(p => p.WeekId == weekid).ToList();
+            var ls = context.Schedules.
+                Where(p => p.Day == weekid);
             Dictionary<int, List<Schedule>> map = new Dictionary<int, List<Schedule>>();
             for (int i = 1; i <= 8; i++)
             {
@@ -442,7 +439,7 @@ namespace StudentManagement.Controllers
             }
 
             var date_raw = (from Schedule in context.Schedules
-                            where Schedule.WeekId == weekid
+                            where Schedule.Day == weekid
                             select Schedule.ScheduleDate)
                             .Distinct().ToList();
             List<String> listDate = new List<String>();
@@ -520,12 +517,11 @@ namespace StudentManagement.Controllers
             }
             ViewBag.Count = ls.Count();
             ViewBag.Subject = context.Subjects.ToList();
-            ViewBag.Room = context.Rooms.ToList();
+            ViewBag.Class = context.Classes.ToList();
             ViewBag.slot = listSlot;
-            ViewBag.week = context.Weeks.ToList();
-            ViewBag.attend = attended;
+            ViewBag.week = Weeks;
+            ViewBag.selectedWeek = Convert.ToInt32(weekid);
             ViewBag.Date = listDate;
-            ViewBag.selectedWeek = weekid;
             return View();
         }
 
@@ -574,14 +570,12 @@ namespace StudentManagement.Controllers
             ViewBag.classId = classId;
             return View();
         }
+
         public IActionResult CheckAttendance(List<int> attendance, int scheduleId, int classId)
         {
             List<Student> listStudent = (from Student in context.Students
                                          where Student.ClassId == classId
                                          select Student).ToList();
-            Schedule schedule = context.Schedules.SingleOrDefault(s => s.ScheduleId == scheduleId);
-            schedule.Status = true;
-            context.SaveChanges();
             if (listStudent.Count() == attendance.Count())
             {
                 for (int i = 0; i < listStudent.Count(); i++)
@@ -623,17 +617,19 @@ namespace StudentManagement.Controllers
                     studentAttended.StudentAttendedDate = DateTime.Now;
                     context.StudentAttendeds.Add(studentAttended);
                     context.SaveChanges();
+
                 }
             }
+
             ViewBag.check = attendance;
+
             return RedirectToAction("TimeTable");
         }
-        public IActionResult CheckEditAttendance(List<int> attendance, int scheduleId, int classId)
+        public IActionResult StudentDetails(int StudentID)
         {
-            List<Student> listStudent = (from Student in context.Students
-                                         where Student.ClassId == classId
-                                         select Student).ToList();
-            if (listStudent.Count() == attendance.Count())
+            StudentID = 4;
+            Student student = context.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
+            if (student == null)
             {
                 for (int i = 0; i < listStudent.Count(); i++)
                 {
@@ -660,17 +656,71 @@ namespace StudentManagement.Controllers
                             context.SaveChanges();
                             i++;
                         }
+                return View("Error");
+            }
 
+            return View(student);
+        }
+        public IActionResult StudentGrade(int StudentId)
+        {
+            StudentId = 5;
+            //List semester
+            List<Semester> listSemeters = context.Semesters.ToList();
+            ViewBag.listSemeters = listSemeters;
+            //List Grade
+            List<Grade> grades = context.Grades.ToList();
+            //List Grade Category
+            List<GradeCategory> gradeCategories = context.GradeCategories.ToList();
+            //List Subject
+            var listSubject = (from st in context.Students
+                               join su in context.Subjects on st.ClassId equals su.ClassId
+                               where st.StudentId == StudentId
+                               select su).ToList();
+            ViewBag.listSubjects = listSubject;
+
+            return View();
+        }
+
+        public IActionResult GradeOfSubject(int SubjectId)
+        {
+int 
+            StudentId = 5;
+            //List semester
+            List<Semester> listSemeters = context.Semesters.ToList();
+            ViewBag.listSemeters = listSemeters;
+            //List Grade
+            List<Grade> grades = context.Grades.ToList();
+            ViewBag.grades = grades;
+            //List Grade Category
+            List<GradeCategory> gradeCategories = context.GradeCategories.ToList();
+            //List Subject
+            var listSubject = (from st in context.Students
+                               join su in context.Subjects on st.ClassId equals su.ClassId
+                               where st.StudentId == StudentId
+                               select su).ToList();
+            ViewBag.listSubjects = listSubject;
+            List<StudentGrade> studentGrades = context.StudentGrades.Where(x => x.SubjectId == SubjectId && x.StudentId == StudentId).OrderBy(x => x.GradeId).OrderBy(x => x.Grade.GradeCategoryId).ToList();
+            ViewBag.studentGrades = studentGrades;
+
+            float avgDiem = 0;
+            int count = 0;
+            foreach(StudentGrade grade in studentGrades)
+            {
+                foreach(Grade grade1 in grades)
+                {
+                    if(grade.GradeId == grade1.GradeId)
+                    {
+
+                        avgDiem = avgDiem + (float)((grade.Value * grade1.Weight) / 100);
+
+                        count = count + 1;
                     }
-                    StudentAttended studentAttended = context.StudentAttendeds.
-                        FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
-                        && x.ScheduleId == scheduleId);
-                    studentAttended.StudentStatus = 1;
-                    context.SaveChanges();
                 }
             }
-            ViewBag.check = attendance;
-            return RedirectToAction("TimeTable");
+            avgDiem /= count;
+            ViewBag.avgDiem = avgDiem;
+
+            return View(studentGrades);
         }
         public IActionResult FeedBack()
         {
@@ -841,5 +891,4 @@ namespace StudentManagement.Controllers
             return View();
         }
     }
-
 }
