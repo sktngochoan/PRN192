@@ -65,7 +65,7 @@
             @foreach (StudentAttended s in Model)
             {
                 <tr>
-                    <td>@s.Schedule.ScheduleDate</td>
+                    <td>@(((DateTime)s.Schedule.ScheduleDate).ToString("MM/dd/yyyy"))</td>
                     <td>@s.Schedule.Slot.SlotId (@s.Schedule.Slot.SlotTime)</td>
                     <td>@s.Schedule.Room.RoomName</td>
                     <td>@s.Schedule.Lecturer.LecturerName</td>

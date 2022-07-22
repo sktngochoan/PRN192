@@ -98,7 +98,7 @@ namespace StudentManagement.Controllers
                 lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
             }
             ViewBag.Lecturer = lecturer;
-            return RedirectToAction("TimeTable");
+            return View();
         }
 
         public IActionResult Logout()
