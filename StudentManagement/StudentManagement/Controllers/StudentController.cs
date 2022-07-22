@@ -565,7 +565,11 @@ namespace StudentManagement.Controllers
             var ListStudent = (from Student in context.Students
                                where Student.ClassId == classId
                                select Student);
+            List<StudentAttended> listSA = (from StudentAttended in context.StudentAttendeds
+                                            where StudentAttended.ScheduleId == scheduleId
+                                            select StudentAttended).ToList();
             ViewBag.student = ListStudent;
+            ViewBag.listSA = listSA;
             ViewBag.scheduleId = scheduleId;
             ViewBag.classId = classId;
             return View();
@@ -771,6 +775,31 @@ namespace StudentManagement.Controllers
             feedback.Comment = comment;
             context.SaveChanges();
             return RedirectToAction("FeedBack");
+        }
+        public IActionResult ViewFeedBack()
+        {
+            //var session = HttpContext.Session;
+            //string jsonaccount = session.GetString("account");
+            //Lecturer lecturer = new Lecturer();
+            //if (jsonaccount != null)
+            //{
+            //    lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            //}
+            Lecturer lecturer = context.Lecturers.Where(x => x.LecturerId == 1).FirstOrDefault();
+            ViewBag.Lecturer = lecturer;
+            ViewBag.Class = context.Classes.ToList();
+            ViewBag.ListSubject = context.Subjects.Where(x => x.LecturerId == lecturer.LecturerId).ToList();
+            return View();
+        }
+        public IActionResult ViewFeedbackDetail(int subjectId, int lecturerId)
+        {
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            
+            ViewBag.feedback = feedback;
+            ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
+            ViewBag.Lecturer = context.Lecturers.ToList();
+            ViewBag.Class = context.Classes.ToList();
+            return View();
         }
     }
 

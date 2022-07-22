@@ -332,3 +332,5 @@ D:\S5\gihubClone\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Stu
 D:\S5\gihubClone\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\StudentManagement.csproj.CopyComplete
 D:\S5\gihubClone\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\StudentManagement.genruntimeconfig.cache
 D:\S5\gihubClone\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\ref\StudentManagement.dll
+D:\S5\gihubClone\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\ViewFeedBack.cshtml.g.cs
+D:\S5\gihubClone\PRN192\StudentManagement\StudentManagement\obj\Debug\net5.0\Razor\Views\Student\ViewFeedbackDetail.cshtml.g.cs
