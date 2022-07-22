@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StudentManagement.Models;
 using System;
 using System.Collections;
@@ -160,7 +162,7 @@ namespace StudentManagement.Controllers
             {
                 int idS = Int32.Parse(id);
                 Student s = context.Students.Find(idS);
-                if(image == null || image.Equals(""))
+                if (image == null || image.Equals(""))
                 {
                     image = context.Students.Find(idS).StudentImg;
                 }
@@ -186,7 +188,8 @@ namespace StudentManagement.Controllers
             ViewBag.Student = student;
             return View();
 
-        }public IActionResult LecturerProfile()
+        }
+        public IActionResult LecturerProfile()
         {
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
@@ -272,146 +275,7 @@ namespace StudentManagement.Controllers
                 }
             }
             List<Schedule> ls = context.Schedules.
-                Where(p => p.Day == "1").ToList();
-            Dictionary<int, List<Schedule>> map = new Dictionary<int, List<Schedule>>();
-            for (int i = 1; i <= 8; i++)
-            {
-                List<Schedule> schedules = new List<Schedule>();
-                foreach (var s in ls)
-                {
-                    if (s.SlotId == i)
-                    {
-                        schedules.Add(s);
-                    }
-                }
-                map.Add(i, schedules);
-            }
-            Dictionary<int, Dictionary<string, Schedule>> map2 = new Dictionary<int, Dictionary<string, Schedule>>();
-            foreach (var m in map)
-            {
-                int key = m.Key;
-                List<Schedule> schedules = m.Value;
-                Dictionary<string, Schedule> map3 = new Dictionary<string, Schedule>();
-                foreach (var item in schedules)
-                {
-                    map3.Add(Convert.ToDateTime(item.ScheduleDate).ToString("dd/MM/yyyy"), item);
-                }
-                map2.Add(key, map3);
-            }
-
-            var date_raw = (from Schedule in context.Schedules
-                            where Schedule.Day == "1"
-                            select Schedule.ScheduleDate)
-                            .Distinct().ToList();
-            List<String> listDate = new List<String>();
-            for (int i = 0; i < date_raw.Count; i++)
-            {
-                listDate.Add(Convert.ToDateTime(date_raw[i]).ToString("dd/MM/yyyy"));
-            }
-
-            ViewBag.TimeTable = map2;
-            List<Slot> listSlot = context.Slots.ToList();
-
-            var listDay = (from Schedule in context.Schedules
-                           select Schedule.ScheduleDate)
-                            .Distinct().ToList();
-            List<string> listWeek = new List<string>();
-            List<string> Weeks = new List<string>();
-            int count = 1;
-            for (int i = 0; i < listDay.Count; i++)
-            {
-                if (count == 1 || count % 7 == 0)
-                {
-                    String[] listElement = Convert.ToDateTime(listDay[i]).ToString("dd/MM/yyyy").Split("/");
-                    listWeek.Add(listElement[0] + "/" + listElement[1]);
-                    if (count == 7)
-                    {
-                        count = 1;
-                    }
-                    else
-                    {
-                        count++;
-                    }
-                }
-                else
-                {
-                    count++;
-                }
-            }
-            for (int i = 0; i < listWeek.Count; i++)
-            {
-                if (i == 0 || i % 2 == 0)
-                    Weeks.Add(listWeek[i] + "-" + listWeek[i + 1]);
-            }
-            List<StudentAttended> listAttend = (from StudentAttended in context.StudentAttendeds
-                                                where StudentAttended.StudentId == 1
-                                                select StudentAttended
-                                                ).ToList();
-            ViewBag.studentAttend = listAttend;
-            List<int> attendance = new List<int>();
-            Dictionary<int, int> attended = new Dictionary<int, int>();
-            for (int i = 0; i < ls.Count; i++)
-            {
-                for (int j = 0; j < listAttend.Count; j++)
-                {
-                    if (ls[i].ScheduleId == listAttend[j].ScheduleId)
-                    {
-                        if (listAttend[j].StudentStatus == 2)
-                        {
-                            attended.Add(ls[i].ScheduleId, 2);
-                            i++;
-                        }
-                        else
-                        {
-                            attended.Add(ls[i].ScheduleId, 1);
-                            i++;
-                        }
-                    }
-                }
-            }
-            for (int i = 0; i < ls.Count; i++)
-            {
-                if (!attended.ContainsKey(ls[i].ScheduleId))
-                {
-                    attended.Add(ls[i].ScheduleId, 0);
-                }
-            }
-            ViewBag.Subject = context.Subjects.ToList();
-            ViewBag.Room = context.Rooms.ToList();
-            ViewBag.slot = listSlot;
-            ViewBag.week = Weeks;
-            ViewBag.attend = attended;
-            ViewBag.Date = listDate;
-            ViewBag.selectedWeek = Convert.ToInt32("1");
-            return View();
-        }
-        [HttpPost]
-        public IActionResult TimeTable(String weekid)
-        {
-            var session = HttpContext.Session;
-            ViewBag.role = session.GetString("role");
-            List<Week> listWeek1 = context.Weeks.ToList();
-            int weekid_check = 0;
-            foreach (var item in listWeek1)
-            {
-                if (DateTime.Compare(DateTime.Now, (DateTime)item.EndDate) < 0)
-                {
-                    weekid_check = item.WeekId;
-                    break;
-                }
-            }
-            if (weekid == weekid_check)
-            {
-                ViewBag.IsAttend = 1;
-            }
-            else
-            {
-                ViewBag.IsAttend = 2;
-            }
-            List<Schedule> ls = context.Schedules.
                 Where(p => p.WeekId == weekid).ToList();
-            var ls = context.Schedules.
-                Where(p => p.Day == weekid);
             Dictionary<int, List<Schedule>> map = new Dictionary<int, List<Schedule>>();
             for (int i = 1; i <= 8; i++)
             {
@@ -425,6 +289,7 @@ namespace StudentManagement.Controllers
                 }
                 map.Add(i, schedules);
             }
+
             Dictionary<int, Dictionary<string, Schedule>> map2 = new Dictionary<int, Dictionary<string, Schedule>>();
             foreach (var m in map)
             {
@@ -439,7 +304,7 @@ namespace StudentManagement.Controllers
             }
 
             var date_raw = (from Schedule in context.Schedules
-                            where Schedule.Day == weekid
+                            where Schedule.WeekId == weekid
                             select Schedule.ScheduleDate)
                             .Distinct().ToList();
             List<String> listDate = new List<String>();
@@ -517,11 +382,172 @@ namespace StudentManagement.Controllers
             }
             ViewBag.Count = ls.Count();
             ViewBag.Subject = context.Subjects.ToList();
-            ViewBag.Class = context.Classes.ToList();
+            ViewBag.Room = context.Rooms.ToList();
             ViewBag.slot = listSlot;
-            ViewBag.week = Weeks;
-            ViewBag.selectedWeek = Convert.ToInt32(weekid);
+            ViewBag.week = context.Weeks.ToList();
+            ViewBag.attend = attended;
             ViewBag.Date = listDate;
+            ViewBag.selectedWeek = weekid;
+            ViewBag.IsAttend = 1;
+
+            // giang update session
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
+            return View();
+        }
+        [HttpPost]
+        public IActionResult TimeTable(int weekid)
+        {
+            var session = HttpContext.Session;
+            ViewBag.role = session.GetString("role");
+            List<Week> listWeek1 = context.Weeks.ToList();
+            int weekid_check = 0;
+            foreach (var item in listWeek1)
+            {
+                if (DateTime.Compare(DateTime.Now, (DateTime)item.EndDate) < 0)
+                {
+                    weekid_check = item.WeekId;
+                    break;
+                }
+            }
+            if (weekid == weekid_check)
+            {
+                ViewBag.IsAttend = 1;
+            }
+            else
+            {
+                ViewBag.IsAttend = 2;
+            }
+            List<Schedule> ls = context.Schedules.
+                Where(p => p.WeekId == weekid).ToList();
+            Dictionary<int, List<Schedule>> map = new Dictionary<int, List<Schedule>>();
+            for (int i = 1; i <= 8; i++)
+            {
+                List<Schedule> schedules = new List<Schedule>();
+                foreach (var s in ls)
+                {
+                    if (s.SlotId == i)
+                    {
+                        schedules.Add(s);
+                    }
+                }
+                map.Add(i, schedules);
+            }
+            Dictionary<int, Dictionary<string, Schedule>> map2 = new Dictionary<int, Dictionary<string, Schedule>>();
+            foreach (var m in map)
+            {
+                int key = m.Key;
+                List<Schedule> schedules = m.Value;
+                Dictionary<string, Schedule> map3 = new Dictionary<string, Schedule>();
+                foreach (var item in schedules)
+                {
+                    map3.Add(Convert.ToDateTime(item.ScheduleDate).ToString("dd/MM/yyyy"), item);
+                }
+                map2.Add(key, map3);
+            }
+
+            var date_raw = (from Schedule in context.Schedules
+                            where Schedule.WeekId == weekid
+                            select Schedule.ScheduleDate)
+                            .Distinct().ToList();
+            List<String> listDate = new List<String>();
+            for (int i = 0; i < date_raw.Count; i++)
+            {
+                listDate.Add(Convert.ToDateTime(date_raw[i]).ToString("dd/MM/yyyy"));
+            }
+
+            ViewBag.TimeTable = map2;
+            List<Slot> listSlot = context.Slots.ToList();
+
+            var listDay = (from Schedule in context.Schedules
+                           select Schedule.ScheduleDate)
+                            .Distinct().ToList();
+            List<string> listWeek = new List<string>();
+            List<string> Weeks = new List<string>();
+            int count = 1;
+            for (int i = 0; i < listDay.Count; i++)
+            {
+                if (count == 1 || count % 7 == 0)
+                {
+                    String[] listElement = Convert.ToDateTime(listDay[i]).ToString("dd/MM/yyyy").Split("/");
+                    listWeek.Add(listElement[0] + "/" + listElement[1]);
+                    if (count == 7)
+                    {
+                        count = 1;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                }
+                else
+                {
+                    count++;
+                }
+            }
+            for (int i = 0; i < listWeek.Count; i++)
+            {
+                if (i == 0 || i % 2 == 0)
+                    Weeks.Add(listWeek[i] + "-" + listWeek[i + 1]);
+            }
+            List<StudentAttended> listAttend = (from StudentAttended in context.StudentAttendeds
+                                                where StudentAttended.StudentId == 1
+                                                select StudentAttended
+                                                ).ToList();
+            ViewBag.studentAttend = listAttend;
+            List<int> attendance = new List<int>();
+            Dictionary<int, int> attended = new Dictionary<int, int>();
+            for (int i = 0; i < ls.Count; i++)
+            {
+                for (int j = 0; j < listAttend.Count; j++)
+                {
+                    if (ls[i].ScheduleId == listAttend[j].ScheduleId)
+                    {
+                        if (listAttend[j].StudentStatus == 2)
+                        {
+                            attended.Add(ls[i].ScheduleId, 2);
+                            i++;
+                        }
+                        else
+                        {
+                            attended.Add(ls[i].ScheduleId, 1);
+                            i++;
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < ls.Count; i++)
+            {
+                if (!attended.ContainsKey(ls[i].ScheduleId))
+                {
+                    attended.Add(ls[i].ScheduleId, 0);
+                }
+            }
+            ViewBag.Count = ls.Count();
+            ViewBag.Subject = context.Subjects.ToList();
+            ViewBag.Room = context.Rooms.ToList();
+            ViewBag.slot = listSlot;
+            ViewBag.week = context.Weeks.ToList();
+            ViewBag.attend = attended;
+            ViewBag.Date = listDate;
+            ViewBag.selectedWeek = weekid;
+
+            // giang update session
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
+
             return View();
         }
 
@@ -535,14 +561,38 @@ namespace StudentManagement.Controllers
             ViewBag.Class = context.Classes.ToList();
             ViewBag.Lecture = context.Lecturers.ToList();
             ViewBag.Subject = context.Subjects.ToList();
+
+            // giang update session
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
             return View();
         }
+
         public IActionResult ClassDetail(int classId)
         {
             var listStudent = (from Student in context.Students
                                where Student.ClassId == classId
                                select Student).ToList();
             ViewBag.student = listStudent;
+
+            // giang update session
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
+
             return View();
         }
 
@@ -554,6 +604,18 @@ namespace StudentManagement.Controllers
             ViewBag.student = ListStudent;
             ViewBag.scheduleId = scheduleId;
             ViewBag.classId = classId;
+
+            // giang update session
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
+
             return View();
         }
         public IActionResult EditAttendance(int classId, int scheduleId)
@@ -568,6 +630,18 @@ namespace StudentManagement.Controllers
             ViewBag.listSA = listSA;
             ViewBag.scheduleId = scheduleId;
             ViewBag.classId = classId;
+
+            // giang update session
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
+
             return View();
         }
 
@@ -622,45 +696,78 @@ namespace StudentManagement.Controllers
             }
 
             ViewBag.check = attendance;
-
+            // giang update session
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
             return RedirectToAction("TimeTable");
         }
+
+        //public IActionResult StudentDetails(int StudentID)
+        //{
+        //    StudentID = 4;
+        //    Student student = context.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
+        //    if (student == null)
+        //    {
+        //        for (int i = 0; i < listStudent.Count(); i++)
+        //        {
+        //            StudentAttended studentAttended1 = context.StudentAttendeds.
+        //                FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
+        //                && x.ScheduleId == scheduleId);
+        //            studentAttended1.StudentStatus = 2;
+        //            context.SaveChanges();
+        //            i++;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < listStudent.Count(); i++)
+        //        {
+        //            for (int j = 0; j < attendance.Count(); j++)
+        //            {
+        //                if (listStudent[i].StudentId == attendance[j])
+        //                {
+        //                    StudentAttended studentAttended1 = context.StudentAttendeds.
+        //                        FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
+        //                        && x.ScheduleId == scheduleId);
+        //                    studentAttended1.StudentStatus = 2;
+        //                    context.SaveChanges();
+        //                    i++;
+        //                }
+        //                return View("Error");
+        //            }
+
+        //            return View(student);
+        //        }
+
         public IActionResult StudentDetails(int StudentID)
         {
             StudentID = 4;
             Student student = context.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
             if (student == null)
             {
-                for (int i = 0; i < listStudent.Count(); i++)
-                {
-                    StudentAttended studentAttended1 = context.StudentAttendeds.
-                        FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
-                        && x.ScheduleId == scheduleId);
-                    studentAttended1.StudentStatus = 2;
-                    context.SaveChanges();
-                    i++;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < listStudent.Count(); i++)
-                {
-                    for (int j = 0; j < attendance.Count(); j++)
-                    {
-                        if (listStudent[i].StudentId == attendance[j])
-                        {
-                            StudentAttended studentAttended1 = context.StudentAttendeds.
-                                FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
-                                && x.ScheduleId == scheduleId);
-                            studentAttended1.StudentStatus = 2;
-                            context.SaveChanges();
-                            i++;
-                        }
                 return View("Error");
             }
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student students = new Student();
+            if (jsonaccount != null)
+            {
+                students = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = students;
+            // giang update sesion
 
             return View(student);
         }
+
         public IActionResult StudentGrade(int StudentId)
         {
             StudentId = 5;
@@ -678,13 +785,24 @@ namespace StudentManagement.Controllers
                                select su).ToList();
             ViewBag.listSubjects = listSubject;
 
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student;
+            // giang update sesion
+
             return View();
         }
 
         public IActionResult GradeOfSubject(int SubjectId)
         {
-int 
-            StudentId = 5;
+            int
+                        StudentId = 5;
             //List semester
             List<Semester> listSemeters = context.Semesters.ToList();
             ViewBag.listSemeters = listSemeters;
@@ -704,11 +822,11 @@ int
 
             float avgDiem = 0;
             int count = 0;
-            foreach(StudentGrade grade in studentGrades)
+            foreach (StudentGrade grade in studentGrades)
             {
-                foreach(Grade grade1 in grades)
+                foreach (Grade grade1 in grades)
                 {
-                    if(grade.GradeId == grade1.GradeId)
+                    if (grade.GradeId == grade1.GradeId)
                     {
 
                         avgDiem = avgDiem + (float)((grade.Value * grade1.Weight) / 100);
@@ -719,6 +837,17 @@ int
             }
             avgDiem /= count;
             ViewBag.avgDiem = avgDiem;
+
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student;
+            // giang update sesion
 
             return View(studentGrades);
         }
@@ -738,7 +867,7 @@ int
             ViewBag.Student = student;
             return View();
         }
-        public IActionResult EditFeedback(int subjectId,int lecturerId)
+        public IActionResult EditFeedback(int subjectId, int lecturerId)
         {
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
@@ -752,6 +881,7 @@ int
             ViewBag.Class = context.Classes.ToList();
             Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             ViewBag.feedback = feedback;
+            ViewBag.Student = student;
             return View();
         }
         public IActionResult AddFeedback(int subjectId, int lecturerId)
@@ -766,9 +896,10 @@ int
             ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
             ViewBag.Lecturer = context.Lecturers.ToList();
             ViewBag.Class = context.Classes.ToList();
+            ViewBag.Student = student;
             return View();
         }
-        public IActionResult SaveFeedback(int subjectId,int lecturerId,int tb,int tsk,int tac,int tsg,int trt,String comment)
+        public IActionResult SaveFeedback(int subjectId, int lecturerId, int tb, int tsk, int tac, int tsg, int trt, String comment)
         {
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
@@ -789,6 +920,7 @@ int
             feedback.Comment = comment;
             context.Feedbacks.Add(feedback);
             context.SaveChanges();
+            ViewBag.Student = student;
             return RedirectToAction("FeedBack");
         }
 
@@ -809,6 +941,7 @@ int
             feedback.TeacherRespond = trt;
             feedback.Comment = comment;
             context.SaveChanges();
+            ViewBag.Student = student;
             return RedirectToAction("FeedBack");
         }
         public IActionResult EditComment(int subjectId, int lecturerId)
@@ -822,9 +955,10 @@ int
             }
             Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             ViewBag.feedback = feedback;
+            ViewBag.Student = student;
             return View();
         }
-        public IActionResult EditInfoComment(int subjectId, int lecturerId,String comment)
+        public IActionResult EditInfoComment(int subjectId, int lecturerId, String comment)
         {
 
             var session = HttpContext.Session;
@@ -837,21 +971,16 @@ int
             Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             feedback.Comment = comment;
             context.SaveChanges();
+            ViewBag.Student = student;
             return RedirectToAction("FeedBack");
         }
         public IActionResult ViewFeedBack()
         {
-            //var session = HttpContext.Session;
-            //string jsonaccount = session.GetString("account");
-            //Lecturer lecturer = new Lecturer();
-            //if (jsonaccount != null)
-            //{
-            //    lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
-            //}
+            
             Lecturer lecturer = context.Lecturers.Where(x => x.LecturerId == 1).FirstOrDefault();
             List<Subject> listSubjec = context.Subjects.Where(x => x.LecturerId == lecturer.LecturerId).ToList();
             int[,] totalFeedback = new int[listSubjec.Count, 5];
-            for(int i = 0;i<listSubjec.Count; i++) 
+            for (int i = 0; i < listSubjec.Count; i++)
             {
                 totalFeedback[i, 0] = context.Feedbacks.Where(x => x.SubjectId == listSubjec[i].SubjectId
                                         && x.LectureId == listSubjec[i].LecturerId).Sum(x => x.TeacherPunctuality).Value;
@@ -868,6 +997,18 @@ int
             ViewBag.Lecturer = lecturer;
             ViewBag.Class = context.Classes.ToList();
             ViewBag.ListSubject = context.Subjects.Where(x => x.LecturerId == lecturer.LecturerId).ToList();
+
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             return View();
         }
         public IActionResult ViewFeedbackDetail(int subjectId, int lecturerId)
@@ -877,18 +1018,43 @@ int
             ViewBag.Lecturer = context.Lecturers.Where(x => x.LecturerId == lecturerId).FirstOrDefault();
             ViewBag.Class = context.Classes.ToList();
             List<Student> listStudent = context.Students.Where(x => x.ClassId == feedback.Subject.ClassId).ToList();
+
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             ViewBag.listStudent = listStudent;
+
             return View();
         }
-        public IActionResult ViewFeedbackStudentDetail(int subjectId, int lecturerId,int studentId)
+        public IActionResult ViewFeedbackStudentDetail(int subjectId, int lecturerId, int studentId)
         {
-            
+
             ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
             ViewBag.Lecturer = context.Lecturers.ToList();
             ViewBag.Class = context.Classes.ToList();
             Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == studentId).FirstOrDefault();
             ViewBag.feedback = feedback;
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             return View();
         }
     }
 }
+

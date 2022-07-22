@@ -21,12 +21,14 @@ namespace StudentManagement.Models
         public DateTime? ScheduleDate { get; set; }
         public bool? Status { get; set; }
         public string Day { get; set; }
+        public int? WeekId { get; set; }
 
         public virtual Class Class { get; set; }
         public virtual Lecturer Lecturer { get; set; }
         public virtual Room Room { get; set; }
         public virtual Slot Slot { get; set; }
         public virtual Subject Subject { get; set; }
+        public virtual Week Week { get; set; }
         public virtual ICollection<StudentAttended> StudentAttendeds { get; set; }
     }
 }
