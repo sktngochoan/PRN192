@@ -4,6 +4,7 @@
 @using System.Linq;
 @{
     List<Subject> listSubject = ViewBag.ListSubject;
+    int count = 0;
 }
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -28,6 +29,22 @@
                                     SUBJECTS
                                 </th>
                                 <th>
+                                    Teacher Punctuality
+                                </th>
+                                <th>
+                                    Teacher Skill
+                                </th>
+                                <th>
+                                    Teacher Cover Topics
+                                </th>
+                                <th>
+                                    Teacher Support
+                                </th>
+                                <th>
+                                    Teacher Respond
+                                </th>
+                                
+                                <th>
                                     Action
                                 </th>
                             </tr>
@@ -43,9 +60,25 @@
                                         @item.SubjectCode
                                     </td>
                                     <td>
+                                        @ViewBag.totalFeedback[count,0]
+                                    </td>
+                                    <td>
+                                        @ViewBag.totalFeedback[count,1]
+                                    </td>
+                                    <td>
+                                        @ViewBag.totalFeedback[count,2]
+                                    </td>
+                                    <td>
+                                        @ViewBag.totalFeedback[count,3]
+                                    </td>
+                                    <td>
+                                        @ViewBag.totalFeedback[count,4]
+                                    </td>
+                                    <td>
                                         <a asp-controller="Student" asp-action="ViewFeedbackDetail" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">View</a>
                                     </td>
                                 </tr>
+                                count++;
                             }
                         </tbody>
                     </table>

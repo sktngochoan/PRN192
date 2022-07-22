@@ -700,7 +700,7 @@ namespace StudentManagement.Controllers
             ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
             ViewBag.Lecturer = context.Lecturers.ToList();
             ViewBag.Class = context.Classes.ToList();
-            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             ViewBag.feedback = feedback;
             return View();
         }
@@ -751,7 +751,7 @@ namespace StudentManagement.Controllers
             {
                 student = JsonConvert.DeserializeObject<Student>(jsonaccount);
             }
-            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             feedback.TeacherPunctuality = tb;
             feedback.TeacherSkill = tsk;
             feedback.TeacherCoverTopics = tac;
@@ -760,18 +760,31 @@ namespace StudentManagement.Controllers
             feedback.Comment = comment;
             context.SaveChanges();
             return RedirectToAction("FeedBack");
-
         }
         public IActionResult EditComment(int subjectId, int lecturerId)
         {
-            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             ViewBag.feedback = feedback;
             return View();
         }
-
         public IActionResult EditInfoComment(int subjectId, int lecturerId,String comment)
         {
-            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
             feedback.Comment = comment;
             context.SaveChanges();
             return RedirectToAction("FeedBack");
@@ -786,6 +799,22 @@ namespace StudentManagement.Controllers
             //    lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
             //}
             Lecturer lecturer = context.Lecturers.Where(x => x.LecturerId == 1).FirstOrDefault();
+            List<Subject> listSubjec = context.Subjects.Where(x => x.LecturerId == lecturer.LecturerId).ToList();
+            int[,] totalFeedback = new int[listSubjec.Count, 5];
+            for(int i = 0;i<listSubjec.Count; i++) 
+            {
+                totalFeedback[i, 0] = context.Feedbacks.Where(x => x.SubjectId == listSubjec[i].SubjectId
+                                        && x.LectureId == listSubjec[i].LecturerId).Sum(x => x.TeacherPunctuality).Value;
+                totalFeedback[i, 1] = context.Feedbacks.Where(x => x.SubjectId == listSubjec[i].SubjectId
+                                        && x.LectureId == listSubjec[i].LecturerId).Sum(x => x.TeacherSkill).Value;
+                totalFeedback[i, 2] = context.Feedbacks.Where(x => x.SubjectId == listSubjec[i].SubjectId
+                                        && x.LectureId == listSubjec[i].LecturerId).Sum(x => x.TeacherCoverTopics).Value;
+                totalFeedback[i, 3] = context.Feedbacks.Where(x => x.SubjectId == listSubjec[i].SubjectId
+                                        && x.LectureId == listSubjec[i].LecturerId).Sum(x => x.TeacherRespond).Value;
+                totalFeedback[i, 4] = context.Feedbacks.Where(x => x.SubjectId == listSubjec[i].SubjectId
+                                        && x.LectureId == listSubjec[i].LecturerId).Sum(x => x.TeacherSupport).Value;
+            }
+            ViewBag.totalFeedback = totalFeedback;
             ViewBag.Lecturer = lecturer;
             ViewBag.Class = context.Classes.ToList();
             ViewBag.ListSubject = context.Subjects.Where(x => x.LecturerId == lecturer.LecturerId).ToList();
@@ -794,11 +823,21 @@ namespace StudentManagement.Controllers
         public IActionResult ViewFeedbackDetail(int subjectId, int lecturerId)
         {
             Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId).FirstOrDefault();
+            ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
+            ViewBag.Lecturer = context.Lecturers.Where(x => x.LecturerId == lecturerId).FirstOrDefault();
+            ViewBag.Class = context.Classes.ToList();
+            List<Student> listStudent = context.Students.Where(x => x.ClassId == feedback.Subject.ClassId).ToList();
+            ViewBag.listStudent = listStudent;
+            return View();
+        }
+        public IActionResult ViewFeedbackStudentDetail(int subjectId, int lecturerId,int studentId)
+        {
             
-            ViewBag.feedback = feedback;
             ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
             ViewBag.Lecturer = context.Lecturers.ToList();
             ViewBag.Class = context.Classes.ToList();
+            Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == studentId).FirstOrDefault();
+            ViewBag.feedback = feedback;
             return View();
         }
     }
