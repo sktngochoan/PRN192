@@ -29,10 +29,19 @@
     <tr style="border-bottom: 0 none">
         <td>
             <div>
-
-                <div id="ctl00_mainContent_divContent">
+                @if(Model.Lecturers != null)
+                {
+                   <div id="ctl00_mainContent_divContent">
                     <span class='fon31'><h3>@Model.Title</h3></span><br />Post by @Model.Lecturers.LecturerName on @Model.Date<hr><p>@Model.Description</p>
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="ctl00_mainContent_divContent">
+                    <span class='fon31'><h3>@Model.Title</h3></span><br />Post by admin on @Model.Date<hr><p>@Model.Description</p>
+                    </div>
+                }
+
                 <div id="ctl00_mainContent_divOther"><br /><hr><b>Tin khác</b><ul>
                         @foreach(News news in ViewBag.listNew)
                         {

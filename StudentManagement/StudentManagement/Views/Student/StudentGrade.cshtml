@@ -36,19 +36,14 @@
 <div class="main">
     <div class="container">
         <div class="row">
-            <h1>Grade report for Nguyễn Phong Hào (HE153346)</h1>
+             @if (ViewBag.Student.StudentName != null)
+            {
+                <h1>Grade report for @ViewBag.Student.StudentName (@ViewBag.Student.StudentId)</h1>
+            }
             <div class="col-md-12">
                 <h6>Select a term, course ...</h6>
             </div>
-            <div class="col-md-2">
-                <h6>TERM</h6>
-                @foreach (var item in listTerm)
-                {
-                    <a asp-controller="Student" asp-action="StudentGrade" asp-route-id=@item.SemesterId>@item.SemesterName</a>
-
-                    <br />
-                }
-            </div>
+            
             <div class="col-md-5">
 
                 @foreach (Subject item in @ViewBag.listSubjects)

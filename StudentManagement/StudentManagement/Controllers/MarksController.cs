@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StudentManagement.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,17 @@ namespace StudentManagement.Controllers
         // GET: MarksController
         public ActionResult Index(int subjectId)
         {
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             int lecturersId = 2;
             //subjectId = 4;
             if (subjectId != null)
@@ -37,6 +49,17 @@ namespace StudentManagement.Controllers
         }
         public ActionResult ViewMark(int subjectId, int studentId)
         {
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             //Non-list support for main list
             List<Grade> grades = context.Grades.ToList();
             List<Student> students = context.Students.ToList();
@@ -57,16 +80,19 @@ namespace StudentManagement.Controllers
         // GET: MarksController/Create
         public ActionResult Create()
         {
+
             return View();
         }
 
         // POST: MarksController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(News news)
         {
             try
             {
+                context.News.Add(news);
+                context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -78,6 +104,17 @@ namespace StudentManagement.Controllers
         // GET: MarksController/Edit/5
         public ActionResult Edit(int id)
         {
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             //Non-list support for main list
             List<Grade> grades = context.Grades.ToList();
             List<Student> students = context.Students.ToList();
@@ -97,6 +134,17 @@ namespace StudentManagement.Controllers
         {
             try
             {
+                // giang update sesion
+                var session = HttpContext.Session;
+                string jsonaccount = session.GetString("account");
+                Lecturer lecturerr = new Lecturer();
+                if (jsonaccount != null)
+                {
+                    lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+                }
+                ViewBag.Lecturer = lecturerr;
+                // giang update sesion
+
                 var oldStudentGrade = context.StudentGrades.Where(s => s.Id == studentGrades.Id).FirstOrDefault();
                 if(oldStudentGrade != null)
                 {

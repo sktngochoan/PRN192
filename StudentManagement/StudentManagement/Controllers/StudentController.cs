@@ -895,7 +895,18 @@ namespace StudentManagement.Controllers
 
         public IActionResult StudentDetails(int StudentID)
         {
-            StudentID = 4;
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student2 = new Student();
+            if (jsonaccount != null)
+            {
+                student2 = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student2;
+            // giang update sesion
+
+            int StudentID = student2.StudentId;
             Student student = context.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
             if (student == null)
             {
@@ -915,9 +926,20 @@ namespace StudentManagement.Controllers
             return View(student);
         }
 
-        public IActionResult StudentGrade(int StudentId)
+        public IActionResult StudentGrade()
         {
-            StudentId = 5;
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Student student = new Student();
+            if (jsonaccount != null)
+            {
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+            }
+            ViewBag.Student = student;
+            // giang update sesion
+
+            int StudentId = student.StudentId;
             //List semester
             List<Semester> listSemeters = context.Semesters.ToList();
             ViewBag.listSemeters = listSemeters;
@@ -932,6 +954,13 @@ namespace StudentManagement.Controllers
                                select su).ToList();
             ViewBag.listSubjects = listSubject;
 
+            
+
+            return View();
+        }
+
+        public IActionResult GradeOfSubject(int SubjectId)
+        {
             // giang update sesion
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
@@ -942,14 +971,8 @@ namespace StudentManagement.Controllers
             }
             ViewBag.Student = student;
             // giang update sesion
+            int StudentId = student.StudentId;
 
-            return View();
-        }
-
-        public IActionResult GradeOfSubject(int SubjectId)
-        {
-            int
-                        StudentId = 5;
             //List semester
             List<Semester> listSemeters = context.Semesters.ToList();
             ViewBag.listSemeters = listSemeters;
@@ -969,21 +992,31 @@ namespace StudentManagement.Controllers
 
             float avgDiem = 0;
             int count = 0;
+            bool check = false;
             foreach (StudentGrade grade in studentGrades)
             {
                 foreach (Grade grade1 in grades)
                 {
-                    if (grade.GradeId == grade1.GradeId)
+                    if (grade.GradeId == grade1.GradeId && grade.Value != null)
                     {
-
-                        avgDiem = avgDiem + (float)((grade.Value * grade1.Weight) / 100);
-
+                        avgDiem = avgDiem + (float)(grade.Value);
                         count = count + 1;
+                    }
+                    if (grade.Value == null)
+                    {
+                        check = true;
                     }
                 }
             }
             avgDiem /= count;
             ViewBag.avgDiem = avgDiem;
+            ViewBag.Status = "Passed";
+            if(check == true)
+            {
+                ViewBag.avgDiem = 0;
+                ViewBag.Status = "Not pass";
+            }
+            
 
             // giang update sesion
             var session = HttpContext.Session;
@@ -1170,7 +1203,6 @@ namespace StudentManagement.Controllers
             ViewBag.Student = student;
             return View();
         }
-
         public IActionResult EditFeedback(int subjectId, int lecturerId)
         {
             var session = HttpContext.Session;

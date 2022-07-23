@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="resource\**" />
+    <Compile Remove="Views\MarkTest\**" />
     <Content Remove="resource\**" />
+    <Content Remove="Views\MarkTest\**" />
     <EmbeddedResource Remove="resource\**" />
+    <EmbeddedResource Remove="Views\MarkTest\**" />
     <None Remove="resource\**" />
+    <None Remove="Views\MarkTest\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,10 +36,6 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\MarkTest\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,26 @@
 ﻿@model StudentManagement.Models.StudentGrade
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="home">Schedule</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
+        <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+            <ul class="navbar-nav m-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="Lecturer">Student Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="StudentProfile">Hello @ViewBag.Lecturer.LecturerName</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="Logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <h4>StudentGrade</h4>
 <hr />
 <div class="row">
@@ -35,7 +56,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Marks" asp-action="ViewMark" asp-route-SubjectId="@Model.StudentId" asp-route-StudentId="@Model.StudentId">Back to List</a>
 </div>
 
 @section Scripts {

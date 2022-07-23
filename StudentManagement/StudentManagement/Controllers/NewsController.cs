@@ -21,12 +21,12 @@ namespace StudentManagement.Controllers
             // giang update sesion
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
-            Student student = new Student();
+            Lecturer lecturerr = new Lecturer();
             if (jsonaccount != null)
             {
-                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
             }
-            ViewBag.Student = student;
+            ViewBag.Lecturer = lecturerr;
             // giang update sesion
 
             return View(listNews);
@@ -37,7 +37,7 @@ namespace StudentManagement.Controllers
             //List news
             if (page == null) page = 1;
             var listNews = context.News.OrderByDescending(s => s.Date).ToList();
-            int pageSize = 1;
+            int pageSize = 5;
             int pageNumber = (page ?? 1);
 
             // giang update sesion
@@ -55,12 +55,6 @@ namespace StudentManagement.Controllers
         }
         public ActionResult ViewNews(int id)
         {
-            List<Lecturer> lecturerList = context.Lecturers.ToList();
-            News news = context.News.Where(n => n.Id == id).FirstOrDefault();
-            //Tin khac
-            List<News> listNew = context.News.OrderByDescending(n => n.Date).Take(5).ToList();
-            ViewBag.listNew = listNew;
-
             // giang update sesion
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
@@ -71,6 +65,15 @@ namespace StudentManagement.Controllers
             }
             ViewBag.Student = student;
             // giang update sesion
+
+
+            List<Lecturer> lecturerList = context.Lecturers.ToList();
+            News news = context.News.Where(n => n.Id == id).FirstOrDefault();
+            //Tin khac
+            List<News> listNew = context.News.OrderByDescending(n => n.Date).Take(5).ToList();
+            ViewBag.listNew = listNew;
+
+            
 
             return View(news);
         }
@@ -83,12 +86,12 @@ namespace StudentManagement.Controllers
             // giang update sesion
             var session = HttpContext.Session;
             string jsonaccount = session.GetString("account");
-            Student student = new Student();
+            Lecturer lecturerr = new Lecturer();
             if (jsonaccount != null)
             {
-                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
             }
-            ViewBag.Student = student;
+            ViewBag.Lecturer = lecturerr;
             // giang update sesion
 
             return View(news);
@@ -97,6 +100,17 @@ namespace StudentManagement.Controllers
         // GET: NewsController/Create
         public ActionResult Create()
         {
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
             return View();
         }
 
@@ -120,6 +134,18 @@ namespace StudentManagement.Controllers
         // GET: NewsController/Edit/5
         public ActionResult Edit(int id)
         {
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
+
+            List<Lecturer> lecturerList = context.Lecturers.ToList();
             News news = context.News.Where(n => n.Id == id).FirstOrDefault();
 
             return View(news);
@@ -148,6 +174,16 @@ namespace StudentManagement.Controllers
         // GET: NewsController/Delete/5
         public ActionResult Delete(int id)
         {
+            // giang update sesion
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturerr = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturerr = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturerr;
+            // giang update sesion
             return View();
         }
 
