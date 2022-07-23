@@ -18,6 +18,7 @@ namespace StudentManagement.Models
         }
 
         public virtual DbSet<Class> Classes { get; set; }
+        public virtual DbSet<Feedback> Feedbacks { get; set; }
         public virtual DbSet<Grade> Grades { get; set; }
         public virtual DbSet<GradeCategory> GradeCategories { get; set; }
         public virtual DbSet<Lecturer> Lecturers { get; set; }
@@ -30,13 +31,14 @@ namespace StudentManagement.Models
         public virtual DbSet<StudentAttended> StudentAttendeds { get; set; }
         public virtual DbSet<StudentGrade> StudentGrades { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
+        public virtual DbSet<Week> Weeks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server=localhost; database=student_management;uid=sa;password=123");
+                optionsBuilder.UseSqlServer("server=(local); database=student_management;uid=sa;password=123");
             }
         }
 
@@ -59,7 +61,49 @@ namespace StudentManagement.Models
                 entity.HasOne(d => d.Semester)
                     .WithMany(p => p.Classes)
                     .HasForeignKey(d => d.SemesterId)
-                    .HasConstraintName("FK__class__semester___398D8EEE");
+                    .HasConstraintName("FK__class__semester___3D5E1FD2");
+            });
+
+            modelBuilder.Entity<Feedback>(entity =>
+            {
+                entity.ToTable("feedback");
+
+                entity.Property(e => e.FeedbackId).HasColumnName("feedback_id");
+
+                entity.Property(e => e.Comment)
+                    .HasMaxLength(1000)
+                    .HasColumnName("comment");
+
+                entity.Property(e => e.LectureId).HasColumnName("lecture_id");
+
+                entity.Property(e => e.StudentId).HasColumnName("student_id");
+
+                entity.Property(e => e.SubjectId).HasColumnName("subject_id");
+
+                entity.Property(e => e.TeacherCoverTopics).HasColumnName("teacher_Cover_Topics");
+
+                entity.Property(e => e.TeacherPunctuality).HasColumnName("teacher_punctuality");
+
+                entity.Property(e => e.TeacherRespond).HasColumnName("teacher_respond");
+
+                entity.Property(e => e.TeacherSkill).HasColumnName("teacher_skill");
+
+                entity.Property(e => e.TeacherSupport).HasColumnName("teacher_support");
+
+                entity.HasOne(d => d.Lecture)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.LectureId)
+                    .HasConstraintName("FK__feedback__lectur__3E52440B");
+
+                entity.HasOne(d => d.Student)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.StudentId)
+                    .HasConstraintName("FK__feedback__studen__3F466844");
+
+                entity.HasOne(d => d.Subject)
+                    .WithMany(p => p.Feedbacks)
+                    .HasForeignKey(d => d.SubjectId)
+                    .HasConstraintName("FK__feedback__subjec__403A8C7D");
             });
 
             modelBuilder.Entity<Grade>(entity =>
@@ -79,7 +123,7 @@ namespace StudentManagement.Models
                 entity.HasOne(d => d.GradeCategory)
                     .WithMany(p => p.Grades)
                     .HasForeignKey(d => d.GradeCategoryId)
-                    .HasConstraintName("FK__grade__grade_cat__3A81B327");
+                    .HasConstraintName("FK__grade__grade_cat__412EB0B6");
             });
 
             modelBuilder.Entity<GradeCategory>(entity =>
@@ -118,16 +162,20 @@ namespace StudentManagement.Models
 
             modelBuilder.Entity<News>(entity =>
             {
+                entity.Property(e => e.Id).HasColumnName("id");
+
                 entity.Property(e => e.Date).HasColumnType("date");
 
                 entity.Property(e => e.Description).HasMaxLength(255);
+
+                entity.Property(e => e.LecturersId).HasColumnName("lecturersId");
 
                 entity.Property(e => e.Title).HasMaxLength(255);
 
                 entity.HasOne(d => d.Lecturers)
                     .WithMany(p => p.News)
                     .HasForeignKey(d => d.LecturersId)
-                    .HasConstraintName("FK__News__LecturersI__628FA481");
+                    .HasConstraintName("FK_News_lecturers");
             });
 
             modelBuilder.Entity<Room>(entity =>
@@ -167,30 +215,37 @@ namespace StudentManagement.Models
 
                 entity.Property(e => e.SubjectId).HasColumnName("subject_id");
 
+                entity.Property(e => e.WeekId).HasColumnName("week_id");
+
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.Schedules)
                     .HasForeignKey(d => d.ClassId)
-                    .HasConstraintName("FK__schedule__class___3B75D760");
+                    .HasConstraintName("FK__schedule__class___4222D4EF");
 
                 entity.HasOne(d => d.Lecturer)
                     .WithMany(p => p.Schedules)
                     .HasForeignKey(d => d.LecturerId)
-                    .HasConstraintName("FK__schedule__lectur__3C69FB99");
+                    .HasConstraintName("FK__schedule__lectur__4316F928");
 
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.Schedules)
                     .HasForeignKey(d => d.RoomId)
-                    .HasConstraintName("FK__schedule__room_i__3D5E1FD2");
+                    .HasConstraintName("FK__schedule__room_i__440B1D61");
 
                 entity.HasOne(d => d.Slot)
                     .WithMany(p => p.Schedules)
                     .HasForeignKey(d => d.SlotId)
-                    .HasConstraintName("FK__schedule__slot_i__3E52440B");
+                    .HasConstraintName("FK__schedule__slot_i__44FF419A");
 
                 entity.HasOne(d => d.Subject)
                     .WithMany(p => p.Schedules)
                     .HasForeignKey(d => d.SubjectId)
-                    .HasConstraintName("FK__schedule__subjec__3F466844");
+                    .HasConstraintName("FK__schedule__subjec__45F365D3");
+
+                entity.HasOne(d => d.Week)
+                    .WithMany(p => p.Schedules)
+                    .HasForeignKey(d => d.WeekId)
+                    .HasConstraintName("FK__schedule__week_i__46E78A0C");
             });
 
             modelBuilder.Entity<Semester>(entity =>
@@ -256,7 +311,7 @@ namespace StudentManagement.Models
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.Students)
                     .HasForeignKey(d => d.ClassId)
-                    .HasConstraintName("FK__student__class_i__403A8C7D");
+                    .HasConstraintName("FK__student__class_i__47DBAE45");
             });
 
             modelBuilder.Entity<StudentAttended>(entity =>
@@ -278,12 +333,12 @@ namespace StudentManagement.Models
                 entity.HasOne(d => d.Schedule)
                     .WithMany(p => p.StudentAttendeds)
                     .HasForeignKey(d => d.ScheduleId)
-                    .HasConstraintName("FK__student_a__sched__412EB0B6");
+                    .HasConstraintName("FK__student_a__sched__48CFD27E");
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.StudentAttendeds)
                     .HasForeignKey(d => d.StudentId)
-                    .HasConstraintName("FK__student_a__stude__4222D4EF");
+                    .HasConstraintName("FK__student_a__stude__49C3F6B7");
             });
 
             modelBuilder.Entity<StudentGrade>(entity =>
@@ -303,17 +358,17 @@ namespace StudentManagement.Models
                 entity.HasOne(d => d.Grade)
                     .WithMany(p => p.StudentGrades)
                     .HasForeignKey(d => d.GradeId)
-                    .HasConstraintName("FK__student_g__grade__4316F928");
+                    .HasConstraintName("FK__student_g__grade__4AB81AF0");
 
                 entity.HasOne(d => d.Student)
                     .WithMany(p => p.StudentGrades)
                     .HasForeignKey(d => d.StudentId)
-                    .HasConstraintName("FK__student_g__stude__440B1D61");
+                    .HasConstraintName("FK__student_g__stude__4BAC3F29");
 
                 entity.HasOne(d => d.Subject)
                     .WithMany(p => p.StudentGrades)
                     .HasForeignKey(d => d.SubjectId)
-                    .HasConstraintName("FK__student_g__subje__44FF419A");
+                    .HasConstraintName("FK__student_g__subje__4CA06362");
             });
 
             modelBuilder.Entity<Subject>(entity =>
@@ -339,17 +394,32 @@ namespace StudentManagement.Models
                 entity.HasOne(d => d.Class)
                     .WithMany(p => p.Subjects)
                     .HasForeignKey(d => d.ClassId)
-                    .HasConstraintName("FK__subject__class_i__45F365D3");
+                    .HasConstraintName("FK__subject__class_i__4D94879B");
 
                 entity.HasOne(d => d.Lecturer)
                     .WithMany(p => p.Subjects)
                     .HasForeignKey(d => d.LecturerId)
-                    .HasConstraintName("FK__subject__lecture__46E78A0C");
+                    .HasConstraintName("FK__subject__lecture__4E88ABD4");
 
                 entity.HasOne(d => d.Semester)
                     .WithMany(p => p.Subjects)
                     .HasForeignKey(d => d.SemesterId)
-                    .HasConstraintName("FK__subject__semeste__47DBAE45");
+                    .HasConstraintName("FK__subject__semeste__4F7CD00D");
+            });
+
+            modelBuilder.Entity<Week>(entity =>
+            {
+                entity.ToTable("week");
+
+                entity.Property(e => e.WeekId).HasColumnName("week_id");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("end_date");
+
+                entity.Property(e => e.WeekDate)
+                    .HasMaxLength(255)
+                    .HasColumnName("week_date");
             });
 
             OnModelCreatingPartial(modelBuilder);

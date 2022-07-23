@@ -21,13 +21,13 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
             <ul class="navbar-nav m-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Manager Admin</a>
+                    <a class="nav-link" asp-controller="Student" asp-action="Lecturer">Lecturer Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Hello Ngoc Hoan</a>
+                    <a class="nav-link" asp-controller="Student" asp-action="LecturerProfile">Hello @ViewBag.Lecturer.LecturerName</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
+                    <a class="nav-link" asp-controller="Student" asp-action="Logout">Logout</a>
                 </li>
             </ul>
         </div>

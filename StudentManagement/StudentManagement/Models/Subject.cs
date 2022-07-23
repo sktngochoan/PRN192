@@ -9,6 +9,7 @@ namespace StudentManagement.Models
     {
         public Subject()
         {
+            Feedbacks = new HashSet<Feedback>();
             Schedules = new HashSet<Schedule>();
             StudentGrades = new HashSet<StudentGrade>();
         }
@@ -23,6 +24,7 @@ namespace StudentManagement.Models
         public virtual Class Class { get; set; }
         public virtual Lecturer Lecturer { get; set; }
         public virtual Semester Semester { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<StudentGrade> StudentGrades { get; set; }
     }

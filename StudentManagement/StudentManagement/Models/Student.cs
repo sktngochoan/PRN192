@@ -9,6 +9,7 @@ namespace StudentManagement.Models
     {
         public Student()
         {
+            Feedbacks = new HashSet<Feedback>();
             StudentAttendeds = new HashSet<StudentAttended>();
             StudentGrades = new HashSet<StudentGrade>();
         }
@@ -25,6 +26,7 @@ namespace StudentManagement.Models
         public string StudentPass { get; set; }
 
         public virtual Class Class { get; set; }
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<StudentAttended> StudentAttendeds { get; set; }
         public virtual ICollection<StudentGrade> StudentGrades { get; set; }
     }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "B+Oz9LnzsbeWJo1pK0D2sQ8HpZG2d7+oXjrXsGczyjFpCIPIb8GSHRm8RT4xFHaHvpRN3LKX61Wv8GoHOIxmfw==",
+  "dgSpecHash": "rejh5n7x4rmt36ZiooE2I3v9FPf1xw98nOzfKIjg7Wp3dX1ViPAcxCCXX1YsaypnYu+z+B7Atzy624WE+3A+PQ==",
   "success": true,
-  "projectFilePath": "D:\\PROJECT FINAL PRN291\\project_prn211\\StudentManagement\\StudentManagement\\StudentManagement.csproj",
+  "projectFilePath": "D:\\FRONT-END\\Final\\StudentManagement (1)\\StudentManagement\\StudentManagement\\StudentManagement.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",

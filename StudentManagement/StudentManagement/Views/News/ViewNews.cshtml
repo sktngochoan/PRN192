@@ -1,14 +1,47 @@
 ﻿@using StudentManagement.Models
 @using StudentManagement
 @model News
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="home">Schedule</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+            <ul class="navbar-nav m-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="Student">Student Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="StudentProfile">Hello @ViewBag.Student.StudentName</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Student" asp-action="Logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 <table>
     <tr style="border-bottom: 0 none">
         <td>
             <div>
-
-                <div id="ctl00_mainContent_divContent">
+                @if(Model.Lecturers != null)
+                {
+                   <div id="ctl00_mainContent_divContent">
                     <span class='fon31'><h3>@Model.Title</h3></span><br />Post by @Model.Lecturers.LecturerName on @Model.Date<hr><p>@Model.Description</p>
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="ctl00_mainContent_divContent">
+                    <span class='fon31'><h3>@Model.Title</h3></span><br />Post by admin on @Model.Date<hr><p>@Model.Description</p>
+                    </div>
+                }
+
                 <div id="ctl00_mainContent_divOther"><br /><hr><b>Tin khác</b><ul>
                         @foreach(News news in ViewBag.listNew)
                         {

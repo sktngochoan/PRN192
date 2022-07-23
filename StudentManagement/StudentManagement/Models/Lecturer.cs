@@ -9,6 +9,7 @@ namespace StudentManagement.Models
     {
         public Lecturer()
         {
+            Feedbacks = new HashSet<Feedback>();
             News = new HashSet<News>();
             Schedules = new HashSet<Schedule>();
             Subjects = new HashSet<Subject>();
@@ -20,6 +21,7 @@ namespace StudentManagement.Models
         public string LecturerPass { get; set; }
         public string LecturerImg { get; set; }
 
+        public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<News> News { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<Subject> Subjects { get; set; }
