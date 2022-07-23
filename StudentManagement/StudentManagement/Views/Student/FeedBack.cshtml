@@ -4,6 +4,7 @@
 @using System.Linq;
 @{
     List<Subject> listSubject = ViewBag.ListSubject;
+    int count = 0;
 }
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -74,11 +75,18 @@
 
                                     </td>
                                     <td>
-                                        <a asp-controller="Student" asp-action="EditComment" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">Edit Comment</a>|
-                                        <a asp-controller="Student" asp-action="EditFeedback" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">RETAKE</a>|
-                                        <a asp-controller="Student" asp-action="AddFeedback" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">Add</a>|
+                                        <a asp-controller="Student" asp-action="EditComment" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">Edit Comment </a>|
+                                        <a asp-controller="Student" asp-action="EditFeedback" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">RETAKE </a>|
+                                        @if (ViewBag.listCheck[count] == 1)
+                                        {
+                                            <a asp-controller="Student" asp-action="AddFeedback" asp-route-subjectId="@item.SubjectId" asp-route-lecturerId="@item.LecturerId">Add</a>
+                                        }
+                                        else
+                                        {
+                                        }
                                     </td>
                                 </tr>
+                                count++;
                             }
                         </tbody>
                     </table>

@@ -618,6 +618,98 @@ namespace StudentManagement.Controllers
 
             return View();
         }
+        //public IActionResult EditAttendance(int classId, int scheduleId)
+        //{
+        //    var ListStudent = (from Student in context.Students
+        //                       where Student.ClassId == classId
+        //                       select Student);
+        //    List<StudentAttended> listSA = (from StudentAttended in context.StudentAttendeds
+        //                                    where StudentAttended.ScheduleId == scheduleId
+        //                                    select StudentAttended).ToList();
+        //    ViewBag.student = ListStudent;
+        //    ViewBag.listSA = listSA;
+        //    ViewBag.scheduleId = scheduleId;
+        //    ViewBag.classId = classId;
+
+        //    // giang update session
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Lecturer lecturer = new Lecturer();
+        //    if (jsonaccount != null)
+        //    {
+        //        lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+        //    }
+        //    ViewBag.Lecturer = lecturer;
+        //    // giang update session
+
+        //    return View();
+        //}
+
+        //public IActionResult CheckAttendance(List<int> attendance, int scheduleId, int classId)
+        //{
+        //    List<Student> listStudent = (from Student in context.Students
+        //                                 where Student.ClassId == classId
+        //                                 select Student).ToList();
+        //    if (listStudent.Count() == attendance.Count())
+        //    {
+        //        for (int i = 0; i < listStudent.Count(); i++)
+        //        {
+        //            StudentAttended studentAttended1 = new StudentAttended();
+        //            studentAttended1.StudentId = listStudent[i].StudentId;
+        //            studentAttended1.ScheduleId = scheduleId;
+        //            studentAttended1.StudentStatus = 2;
+        //            studentAttended1.StudentAttendedDate = DateTime.Now;
+        //            context.StudentAttendeds.Add(studentAttended1);
+        //            context.SaveChanges();
+        //            i++;
+
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < listStudent.Count(); i++)
+        //        {
+        //            for (int j = 0; j < attendance.Count(); j++)
+        //            {
+        //                if (listStudent[i].StudentId == attendance[j])
+        //                {
+        //                    StudentAttended studentAttended1 = new StudentAttended();
+        //                    studentAttended1.StudentId = listStudent[i].StudentId;
+        //                    studentAttended1.ScheduleId = scheduleId;
+        //                    studentAttended1.StudentStatus = 2;
+        //                    studentAttended1.StudentAttendedDate = DateTime.Now;
+        //                    context.StudentAttendeds.Add(studentAttended1);
+        //                    context.SaveChanges();
+        //                    i++;
+        //                }
+
+        //            }
+        //            StudentAttended studentAttended = new StudentAttended();
+        //            studentAttended.StudentId = listStudent[i].StudentId;
+        //            studentAttended.ScheduleId = scheduleId;
+        //            studentAttended.StudentStatus = 1;
+        //            studentAttended.StudentAttendedDate = DateTime.Now;
+        //            context.StudentAttendeds.Add(studentAttended);
+        //            context.SaveChanges();
+
+        //        }
+        //    }
+
+        //    ViewBag.check = attendance;
+        //    // giang update session
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Lecturer lecturer = new Lecturer();
+        //    if (jsonaccount != null)
+        //    {
+        //        lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+        //    }
+        //    ViewBag.Lecturer = lecturer;
+        //    // giang update session
+        //    return RedirectToAction("TimeTable");
+        //}
+
+        //giang update
         public IActionResult EditAttendance(int classId, int scheduleId)
         {
             var ListStudent = (from Student in context.Students
@@ -644,12 +736,14 @@ namespace StudentManagement.Controllers
 
             return View();
         }
-
         public IActionResult CheckAttendance(List<int> attendance, int scheduleId, int classId)
         {
             List<Student> listStudent = (from Student in context.Students
                                          where Student.ClassId == classId
                                          select Student).ToList();
+            Schedule schedule = context.Schedules.SingleOrDefault(s => s.ScheduleId == scheduleId);
+            schedule.Status = true;
+            context.SaveChanges();
             if (listStudent.Count() == attendance.Count())
             {
                 for (int i = 0; i < listStudent.Count(); i++)
@@ -691,10 +785,62 @@ namespace StudentManagement.Controllers
                     studentAttended.StudentAttendedDate = DateTime.Now;
                     context.StudentAttendeds.Add(studentAttended);
                     context.SaveChanges();
-
                 }
             }
+            ViewBag.check = attendance;
+            // giang update session
+            var session = HttpContext.Session;
+            string jsonaccount = session.GetString("account");
+            Lecturer lecturer = new Lecturer();
+            if (jsonaccount != null)
+            {
+                lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+            }
+            ViewBag.Lecturer = lecturer;
+            // giang update session
 
+            return RedirectToAction("TimeTable");
+        }
+        public IActionResult CheckEditAttendance(List<int> attendance, int scheduleId, int classId)
+        {
+            List<Student> listStudent = (from Student in context.Students
+                                         where Student.ClassId == classId
+                                         select Student).ToList();
+            if (listStudent.Count() == attendance.Count())
+            {
+                for (int i = 0; i < listStudent.Count(); i++)
+                {
+                    StudentAttended studentAttended1 = context.StudentAttendeds.
+                        FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
+                        && x.ScheduleId == scheduleId);
+                    studentAttended1.StudentStatus = 2;
+                    context.SaveChanges();
+                    i++;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < listStudent.Count(); i++)
+                {
+                    for (int j = 0; j < attendance.Count(); j++)
+                    {
+                        if (listStudent[i].StudentId == attendance[j])
+                        {
+                            StudentAttended studentAttended1 = context.StudentAttendeds.
+                                FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
+                                && x.ScheduleId == scheduleId);
+                            studentAttended1.StudentStatus = 2;
+                            context.SaveChanges();
+                            i++;
+                        }
+                    }
+                    StudentAttended studentAttended = context.StudentAttendeds.
+                        FirstOrDefault(x => x.StudentId == listStudent[i].StudentId
+                        && x.ScheduleId == scheduleId);
+                    studentAttended.StudentStatus = 1;
+                    context.SaveChanges();
+                }
+            }
             ViewBag.check = attendance;
             // giang update session
             var session = HttpContext.Session;
@@ -708,6 +854,7 @@ namespace StudentManagement.Controllers
             // giang update session
             return RedirectToAction("TimeTable");
         }
+        //giang update
 
         //public IActionResult StudentDetails(int StudentID)
         //{
@@ -851,6 +998,147 @@ namespace StudentManagement.Controllers
 
             return View(studentGrades);
         }
+        //public IActionResult FeedBack()
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    int classId = (int)student.ClassId;
+        //    ViewBag.ListSubject = context.Subjects.Where(x => x.ClassId == classId).ToList();
+        //    ViewBag.ListClass = context.Classes.ToList();
+        //    ViewBag.Lecture = context.Lecturers.ToList();
+        //    ViewBag.Student = student;
+        //    return View();
+        //}
+        //public IActionResult EditFeedback(int subjectId, int lecturerId)
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
+        //    ViewBag.Lecturer = context.Lecturers.ToList();
+        //    ViewBag.Class = context.Classes.ToList();
+        //    Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
+        //    ViewBag.feedback = feedback;
+        //    ViewBag.Student = student;
+        //    return View();
+        //}
+        //public IActionResult AddFeedback(int subjectId, int lecturerId)
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    ViewBag.Subject = context.Subjects.Where(x => x.SubjectId == subjectId).FirstOrDefault();
+        //    ViewBag.Lecturer = context.Lecturers.ToList();
+        //    ViewBag.Class = context.Classes.ToList();
+        //    ViewBag.Student = student;
+        //    return View();
+        //}
+        //public IActionResult SaveFeedback(int subjectId, int lecturerId, int tb, int tsk, int tac, int tsg, int trt, String comment)
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    Feedback feedback = new Feedback();
+        //    feedback.StudentId = student.StudentId;
+        //    feedback.SubjectId = subjectId;
+        //    feedback.LectureId = lecturerId;
+        //    feedback.TeacherPunctuality = tb;
+        //    feedback.TeacherSkill = tsk;
+        //    feedback.TeacherCoverTopics = tac;
+        //    feedback.TeacherSupport = tsg;
+        //    feedback.TeacherRespond = trt;
+        //    feedback.Comment = comment;
+        //    context.Feedbacks.Add(feedback);
+        //    context.SaveChanges();
+        //    ViewBag.Student = student;
+        //    return RedirectToAction("FeedBack");
+        //}
+
+        //public IActionResult EditInfoFeedBack(int subjectId, int lecturerId, int tb, int tsk, int tac, int tsg, int trt, String comment)
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
+        //    feedback.TeacherPunctuality = tb;
+        //    feedback.TeacherSkill = tsk;
+        //    feedback.TeacherCoverTopics = tac;
+        //    feedback.TeacherSupport = tsg;
+        //    feedback.TeacherRespond = trt;
+        //    feedback.Comment = comment;
+        //    context.SaveChanges();
+        //    ViewBag.Student = student;
+        //    return RedirectToAction("FeedBack");
+        //}
+        //public IActionResult EditComment(int subjectId, int lecturerId)
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
+        //    ViewBag.feedback = feedback;
+        //    ViewBag.Student = student;
+        //    return View();
+        //}
+        //public IActionResult EditInfoComment(int subjectId, int lecturerId, String comment)
+        //{
+
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    Feedback feedback = context.Feedbacks.Where(x => x.SubjectId == subjectId && x.LectureId == lecturerId && x.StudentId == student.StudentId).FirstOrDefault();
+        //    feedback.Comment = comment;
+        //    context.SaveChanges();
+        //    ViewBag.Student = student;
+        //    return RedirectToAction("FeedBack");
+        //}
+
+        //update
+        //public IActionResult FeedBack()
+        //{
+        //    var session = HttpContext.Session;
+        //    string jsonaccount = session.GetString("account");
+        //    Student student = new Student();
+        //    if (jsonaccount != null)
+        //    {
+        //        student = JsonConvert.DeserializeObject<Student>(jsonaccount);
+        //    }
+        //    int classId = (int)student.ClassId;
+        //    ViewBag.ListSubject = context.Subjects.Where(x => x.ClassId == classId).ToList();
+        //    ViewBag.ListClass = context.Classes.ToList();
+        //    ViewBag.Lecture = context.Lecturers.ToList();
+        //    ViewBag.Student = student;
+        //    return View();
+        //}
         public IActionResult FeedBack()
         {
             var session = HttpContext.Session;
@@ -861,12 +1149,28 @@ namespace StudentManagement.Controllers
                 student = JsonConvert.DeserializeObject<Student>(jsonaccount);
             }
             int classId = (int)student.ClassId;
-            ViewBag.ListSubject = context.Subjects.Where(x => x.ClassId == classId).ToList();
+            List<int> checkfeedback = new List<int>();
+            List<Subject> listSub = context.Subjects.Where(x => x.ClassId == classId).ToList();
+            ViewBag.ListSubject = listSub;
+            for (int i = 0; i < listSub.Count; i++)
+            {
+                Feedback f = context.Feedbacks.Where(x => x.StudentId == student.StudentId && x.SubjectId == listSub[i].SubjectId).FirstOrDefault();
+                if (f == null)
+                {
+                    checkfeedback.Add(1);
+                }
+                else
+                {
+                    checkfeedback.Add(0);
+                }
+            }
+            ViewBag.listCheck = checkfeedback;
             ViewBag.ListClass = context.Classes.ToList();
             ViewBag.Lecture = context.Lecturers.ToList();
             ViewBag.Student = student;
             return View();
         }
+
         public IActionResult EditFeedback(int subjectId, int lecturerId)
         {
             var session = HttpContext.Session;
@@ -974,9 +1278,10 @@ namespace StudentManagement.Controllers
             ViewBag.Student = student;
             return RedirectToAction("FeedBack");
         }
+        //update
         public IActionResult ViewFeedBack()
         {
-            
+
             Lecturer lecturer = context.Lecturers.Where(x => x.LecturerId == 1).FirstOrDefault();
             List<Subject> listSubjec = context.Subjects.Where(x => x.LecturerId == lecturer.LecturerId).ToList();
             int[,] totalFeedback = new int[listSubjec.Count, 5];
