@@ -393,12 +393,16 @@ namespace StudentManagement.Controllers
             // giang update session
             string jsonaccount = session.GetString("account");
             Lecturer lecturer = new Lecturer();
+            Student student = new Student();
             if (jsonaccount != null)
             {
                 lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
             }
             ViewBag.Lecturer = lecturer;
+            ViewBag.Student = student;
             // giang update session
+
             return View();
         }
         [HttpPost]
@@ -541,11 +545,14 @@ namespace StudentManagement.Controllers
             // giang update session
             string jsonaccount = session.GetString("account");
             Lecturer lecturer = new Lecturer();
+            Student student = new Student();
             if (jsonaccount != null)
             {
                 lecturer = JsonConvert.DeserializeObject<Lecturer>(jsonaccount);
+                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
             }
             ViewBag.Lecturer = lecturer;
+            ViewBag.Student = student;
             // giang update session
 
             return View();
@@ -893,7 +900,7 @@ namespace StudentManagement.Controllers
         //            return View(student);
         //        }
 
-        public IActionResult StudentDetails(int StudentID)
+        public IActionResult StudentDetails()
         {
             // giang update sesion
             var session = HttpContext.Session;
@@ -912,16 +919,6 @@ namespace StudentManagement.Controllers
             {
                 return View("Error");
             }
-            // giang update sesion
-            var session = HttpContext.Session;
-            string jsonaccount = session.GetString("account");
-            Student students = new Student();
-            if (jsonaccount != null)
-            {
-                students = JsonConvert.DeserializeObject<Student>(jsonaccount);
-            }
-            ViewBag.Student = students;
-            // giang update sesion
 
             return View(student);
         }
@@ -1017,18 +1014,6 @@ namespace StudentManagement.Controllers
                 ViewBag.Status = "Not pass";
             }
             
-
-            // giang update sesion
-            var session = HttpContext.Session;
-            string jsonaccount = session.GetString("account");
-            Student student = new Student();
-            if (jsonaccount != null)
-            {
-                student = JsonConvert.DeserializeObject<Student>(jsonaccount);
-            }
-            ViewBag.Student = student;
-            // giang update sesion
-
             return View(studentGrades);
         }
         //public IActionResult FeedBack()
